@@ -1,32 +1,16 @@
 print('wifi_client ...')
-
-wifi.setphymode(cfg.wifiMode)
-wifi.setmode(wifi.STATION)
-
 print('MAC: ', wifi.sta.getmac())
 print('chip: ', node.chipid())
 print('heap: ', node.heap())
 
-if (cfg.wifiIp) then
-  wifi.sta.setip({
-    ip = cfg.wifiIp,
-    netmask = '255.255.255.0',
-    gateway = cfg.wifiGateway
-  })
-  net.dns.setdnsserver(cfg.dns0, 0)
-  net.dns.setdnsserver(cfg.dns1, 1)
-end
-
-wifi.sta.config(cfg.wifiSsid, cfg.wifiPass)
-
-wifi.sta.eventMonReg(wifi.STA_GOTIP, function()
+wifi.eventmon.register(wifi.STA_GOTIP, function()
     print("STATION_GOT_IP")
     print("WiFi connection established, IP address: " .. wifi.sta.getip())
     appStatus.wifiConnected = true
 end)
 
-wifi.sta.eventMonReg(wifi.STA_CONNECTING, function(previousState)
-    if(previousState == wifi.STA_GOTIP) then 
+wifi.eventmon.register(wifi.STA_CONNECTING, function(previousState)
+    if(previousState == wifi.STA_GOTIP) then
         print("Station lost connection with access point\n\tAttempting to reconnect...")
         appStatus.wifiConnected = false
     else
@@ -34,4 +18,16 @@ wifi.sta.eventMonReg(wifi.STA_CONNECTING, function(previousState)
     end
 end)
 
-wifi.sta.eventMonStart()
+wifi.setmode(wifi.STATIONAP)
+
+ssid = "Node" .. node.chipid()
+wifi.ap.config({ssid=ssid, auth=wifi.OPEN})
+enduser_setup.manual(true)
+enduser_setup.start(
+  function()
+    print("Connected to wifi as:" .. wifi.sta.getip())
+  end,
+  function(err, str)
+    print("enduser_setup: Err #" .. err .. ": " .. str)
+  end
+);

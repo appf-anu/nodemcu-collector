@@ -1,11 +1,10 @@
 print('read_round ...')
-
 -- For comparing against captureDelta
 local lastValues = {}
 
 function doReadRound()
   local value
-  
+
   -- Detect start of node
   if (appStatus.lastRoundSlot == 0) then
     addToDataQueue(cfg.readerId.nodeEvent, '"start"')
@@ -29,9 +28,9 @@ function doReadRound()
     if (value and greaterThanDelta(cfg.readerId.wifiSignal, value)) then
       addToDataQueue(cfg.readerId.wifiSignal, value)
     end
-  
+
   -- External temp and humidity
-  --[[
+
   elseif (readerSlots[appStatus.lastRoundSlot] == cfg.readerId.externalTemp) then
     -- This reader gets cfg.readerId.externalHum also
     local tempValue, humValue = readTempHum()
@@ -43,7 +42,6 @@ function doReadRound()
     if (humValue and greaterThanDelta(cfg.readerId.externalHum, humValue)) then
       addToDataQueue(cfg.readerId.externalHum, humValue)
     end
-  ]]
 
   -- Other sensor
   --[[
@@ -104,8 +102,8 @@ function greaterThanDelta(readerId, currentValue)
   return isGreater
 end
 
-tmr.register(
-  timerAllocation.readRound,
+timerAllocation.readRound = tmr.create()
+timerAllocation.readRound:register(
   cfg.readRoundInterval,
   tmr.ALARM_AUTO,
   doReadRound

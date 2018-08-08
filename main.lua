@@ -25,7 +25,7 @@ end
 -- drivers
 
 -- readers
--- require('reader_temp_hum')
+require('reader_temp_hum')
 -- require('reader_others')
 
 -- setup main events
@@ -33,7 +33,8 @@ require('transmission')
 require('read_round')
 
 -- Unrequire after 10 sec
-tmr.alarm(timerAllocation.initAlarm, 10000, tmr.ALARM_SINGLE, function()
+timerAllocation.initAlarm = tmr.create()
+timerAllocation.initAlarm:alarm(10000, tmr.ALARM_SINGLE, function()
   unrequire('config')
   unrequire('config_local')
   unrequire('status')

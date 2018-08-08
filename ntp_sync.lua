@@ -35,7 +35,8 @@ function doNtpSync()
     end
   )
 end
-
-tmr.register(timerAllocation.syncSntp, 3600000, tmr.ALARM_AUTO, startNtpSync)
-tmr.start(timerAllocation.syncSntp)
 startNtpSync()
+
+timerAllocation.syncSntp = tmr.create()
+timerAllocation.syncSntp:register(3600000, tmr.ALARM_AUTO, startNtpSync)
+timerAllocation.syncSntp.start(timerAllocation.syncSntp)

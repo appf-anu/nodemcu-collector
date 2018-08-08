@@ -39,7 +39,7 @@ function doTransmission()
     local itemsToCopy
     if (#dataQueue > cfg.transmissionBlock) then
       itemsToCopy = cfg.transmissionBlock
-    else 
+    else
       itemsToCopy = #dataQueue
     end
 
@@ -66,7 +66,7 @@ function sendCurrentBlock()
   local tcpSocket
   tcpSocket = net.createConnection(net.TCP, 0)
   tcpSocket:connect(cfg.influxDB.port, cfg.influxDB.host)
-  
+
   tcpSocket:on('connection', sendToInflux)
 
   tcpSocket:on('disconnection', function(sck, c)
@@ -106,14 +106,14 @@ function sendToInflux(sck, c)
     tagsLine = tagsLine .. tag .. '=' .. value .. ','
   end
   tagsLine = string.sub(tagsLine, 1, (#tagsLine - 1))
-  
+
   local influxLines = ''
   for key, stringItem in pairs(currentDataBlock) do
     local dataItem = stringToDataItem(stringItem)
     if (dataItem[2] and dataItem[3]) then
       influxLines = influxLines ..
         influxMeasurement[0 + dataItem[2]] .. ',' .. tagsLine ..
-        ' value=' .. dataItem[3] .. ' ' .. dataItem[1] .. '\n'
+        ' '..fieldNames[0 + dataItem[2]]..'=' .. dataItem[3] .. ' ' .. dataItem[1] .. '\n'
     end
   end
 
@@ -134,8 +134,8 @@ function sendToInflux(sck, c)
   sck:send(request)
 end
 
-tmr.register(
-  timerAllocation.transmission,
+timerAllocation.transmission = tmr.create()
+timerAllocation.transmission:register(
   cfg.transmissionInterval,
   tmr.ALARM_AUTO,
   doTransmission

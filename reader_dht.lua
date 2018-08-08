@@ -1,4 +1,4 @@
-function readTempHum()
+function readSensor()
   local status, temp, humi, temp_dec, humi_dec = dht.read(gpioPins.dht)
   
   if status == dht.OK then
@@ -10,6 +10,6 @@ function readTempHum()
       print('DHT timed out.')
   end
   
-  return temp, humi
+  return temp, humi, nil
   
 end

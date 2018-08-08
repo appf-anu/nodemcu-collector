@@ -25,7 +25,10 @@ end
 -- drivers
 
 -- readers
-require('reader_temp_hum')
+for i,reader in ipairs(cfg.sensorReaders) do
+    print("loading "..reader.."...")
+    require(reader)
+end
 -- require('reader_others')
 
 -- setup main events
@@ -36,7 +39,6 @@ require('read_round')
 timerAllocation.initAlarm = tmr.create()
 timerAllocation.initAlarm:alarm(10000, tmr.ALARM_SINGLE, function()
   unrequire('config')
-  unrequire('config_local')
   unrequire('status')
   unrequire('timers')
   unrequire('reader_slots')

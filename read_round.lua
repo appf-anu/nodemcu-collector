@@ -33,7 +33,7 @@ function doReadRound()
 
   elseif (readerSlots[appStatus.lastRoundSlot] == cfg.readerId.externalTemp) then
     -- This reader gets cfg.readerId.externalHum also
-    local tempValue, humValue = readTempHum()
+    local tempValue, humValue, presValue= readSensor()
 
     if (tempValue and greaterThanDelta(cfg.readerId.externalTemp, tempValue)) then
       addToDataQueue(cfg.readerId.externalTemp, tempValue)
@@ -43,14 +43,10 @@ function doReadRound()
       addToDataQueue(cfg.readerId.externalHum, humValue)
     end
 
-  -- Other sensor
-  --[[
-  elseif (readerSlots[appStatus.lastRoundSlot] == cfg.readerId.pressureHigh) then
-    value = readPressure(cfg.readerId.pressureHigh)
-    if (valud and greaterThanDelta(cfg.readerId.pressureHigh, value)) then
-      addToDataQueue(cfg.readerId.pressureHigh, value)
+    if (presValue and greaterThanDelta(cfg.readerId.externalPres, presValue)) then
+      addToDataQueue(cfg.readerId.externalPres, presValue)
     end
-  ]]
+    
   end
 
 end
@@ -102,10 +98,16 @@ function greaterThanDelta(readerId, currentValue)
   return isGreater
 end
 
+
+
 timerAllocation.readRound = tmr.create()
 timerAllocation.readRound:register(
   cfg.readRoundInterval,
   tmr.ALARM_AUTO,
-  doReadRound
+  function()
+    for i=0,#readerSlots do
+        doReadRound()
+    end
+  end
 )
 tmr.start(timerAllocation.readRound)

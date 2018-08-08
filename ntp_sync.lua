@@ -42,3 +42,5 @@ end
 timerAllocation.syncSntp = tmr.create()
 timerAllocation.syncSntp:register(1800000, tmr.ALARM_AUTO, startNtpSync)
 timerAllocation.syncSntp.start(timerAllocation.syncSntp)
+
+startNtpSync()

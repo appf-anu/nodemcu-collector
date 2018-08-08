@@ -3,6 +3,9 @@ local hourCount = 0
 local sntpServerIp
 
 function startNtpSync()
+  if (rtctime.get() == 0) then
+    hourCount = 0
+  end
   if (hourCount == 0 and appStatus.wifiConnected) then
     net.dns.resolve(cfg.sntpServerName, function(sk, ip)
       if (ip) then
@@ -11,7 +14,7 @@ function startNtpSync()
       else
         print('Resolve ' .. cfg.sntpServerName .. ' fail!')
         print('Fallback to ' .. cfg.sntpServerIp)
-        sntpServerIp = cfg.sntpServerIp
+        sntpServerIp = cfg.sntpServerIbrop
       end
 
       doNtpSync()
@@ -35,8 +38,7 @@ function doNtpSync()
     end
   )
 end
-startNtpSync()
 
 timerAllocation.syncSntp = tmr.create()
-timerAllocation.syncSntp:register(3600000, tmr.ALARM_AUTO, startNtpSync)
+timerAllocation.syncSntp:register(1800000, tmr.ALARM_AUTO, startNtpSync)
 timerAllocation.syncSntp.start(timerAllocation.syncSntp)

@@ -14,7 +14,7 @@ function readSensor()
         humi = humi / 1000
     end
     if not (QNH == nil) then
-        QNH = QNH / 1000
+        QNH = QNH / 10
     end
   return temp, humi, QNH
 end

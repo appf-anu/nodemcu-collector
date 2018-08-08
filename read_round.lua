@@ -105,7 +105,7 @@ timerAllocation.readRound:register(
   cfg.readRoundInterval,
   tmr.ALARM_AUTO,
   function()
-    for i=0,#readerSlots do
+    for i=0,#readerSlots+1 do
         doReadRound()
     end
   end

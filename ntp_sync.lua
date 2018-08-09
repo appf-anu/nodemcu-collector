@@ -9,14 +9,12 @@ function startNtpSync()
   if (hourCount == 0 and appStatus.wifiConnected) then
     net.dns.resolve(cfg.sntpServerName, function(sk, ip)
       if (ip) then
-        print('Resolved ' .. cfg.sntpServerName .. ' to ' .. ip)
+        print('resolved ' .. cfg.sntpServerName .. ' to ' .. ip)
         sntpServerIp = ip
       else
-        print('Resolve ' .. cfg.sntpServerName .. ' fail!')
-        print('Fallback to ' .. cfg.sntpServerIp)
+        print('resolve ' .. cfg.sntpServerName .. ' fail!')
         sntpServerIp = cfg.sntpServerIbrop
       end
-
       doNtpSync()
     end)
   end

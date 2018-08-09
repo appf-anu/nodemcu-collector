@@ -5,6 +5,14 @@ require('ntp_sync')
 -- fields: [1]delta tz, [2]readerId, [3]value
 dataQueue = {}
 
+reverseReaderSlots = {}
+
+for mn, v in pairs(cfg.readerSlots) do
+   for fn, slot in pairs(v.fieldSlots) do
+    reverseReaderSlots[slot] = {measurementName = mn, fieldName = fn}
+  end
+end
+
 function dataItemToString(dataItem)
   return dataItem[1] .. ',' .. dataItem[2] .. ',' .. dataItem[3]
 end
@@ -25,13 +33,14 @@ end
 -- drivers
 
 -- readers
-for i,reader in ipairs(cfg.sensorReaders) do
-    print("loading "..reader.."...")
-    require(reader)
-end
+-- for i,reader in ipairs(cfg.sensorReaders) do
+--     print("loading "..reader.."...")
+--     require(reader)
+-- end
 -- require('reader_others')
 
 -- setup main events
+
 require('transmission')
 require('read_round')
 
@@ -41,6 +50,6 @@ timerAllocation.initAlarm:alarm(10000, tmr.ALARM_SINGLE, function()
   unrequire('config')
   unrequire('status')
   unrequire('timers')
-  unrequire('reader_slots')
+  -- unrequire('reader_slots')
   unrequire('pins')
 end)

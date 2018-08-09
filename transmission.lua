@@ -107,13 +107,14 @@ function sendToInflux(sck, c)
   end
   tagsLine = string.sub(tagsLine, 1, (#tagsLine - 1))
 
-  local influxLines = ''
+  local ifl = ''
   for key, stringItem in pairs(currentDataBlock) do
     local dataItem = stringToDataItem(stringItem)
     if (dataItem[2] and dataItem[3]) then
-      influxLines = influxLines ..
-        influxMeasurement[0 + dataItem[2]] .. ',' .. tagsLine ..
-        ' '..fieldNames[0 + dataItem[2]]..'=' .. dataItem[3] .. ' ' .. dataItem[1] .. '\n'
+      local vs = dataItem[2]
+      ifl = ifl ..
+        reverseReaderSlots[vs].measurmentName .. ',' .. tagsLine .. ' ' .. 
+        reverseReaderSlots[vs].fieldName ..'=' .. dataItem[3] .. ' ' .. dataItem[1] .. '\n'
     end
   end
 
@@ -126,8 +127,8 @@ function sendToInflux(sck, c)
     'Host: ' .. cfg.influxDB.host .. '\n' ..
     'Connection: close\n' ..
     'Content-Type: \n' ..
-    'Content-Length: ' .. string.len(influxLines) .. '\n' ..
-    '\n' .. influxLines
+    'Content-Length: ' .. string.len(ifl) .. '\n' ..
+    '\n' .. ifl
 
   print(request)
 

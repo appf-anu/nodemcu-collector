@@ -111,10 +111,13 @@ function sendToInflux(sck, c)
   for key, stringItem in pairs(currentDataBlock) do
     local dataItem = stringToDataItem(stringItem)
     if (dataItem[2] and dataItem[3]) then
-      local vs = dataItem[2]
+      -- remember this is a string until you convert it to a number!
+      local vs = tonumber(dataItem[2])
+
+      local rrs = reverseReaderSlots[vs]
       ifl = ifl ..
-        reverseReaderSlots[vs].measurmentName .. ',' .. tagsLine .. ' ' .. 
-        reverseReaderSlots[vs].fieldName ..'=' .. dataItem[3] .. ' ' .. dataItem[1] .. '\n'
+        rrs.measure .. ',' .. tagsLine .. ' ' .. 
+        rrs.field ..'=' .. dataItem[3] .. ' ' .. dataItem[1] .. '\n'
     end
   end
 

@@ -6,6 +6,14 @@ gpioPins ={}
 appStatus = {}
 timerAllocation = {}
 
+function readHeap()
+ return node.heap()
+end
+
+function readRssi()
+  return wifi.sta.getrssi()
+end
+
 require('reader_bmx280')
 require('reader_dht')
 require('config')
@@ -16,7 +24,7 @@ require('timers')
 
 --node.setcpufreq(cfg.nodeCpuFreq)
 
-require('wifi_client')  
+--require('wifi_client')
 --require('telnetsrv')
 
 -- Launch 'main' after 5 sec

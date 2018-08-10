@@ -6,17 +6,10 @@ function doReadRound()
   for key, readerSlot in pairs(cfg.readerSlots) do
     -- get values
     local vl = {readerSlot.reader()}
-    -- iterate over returned vl
+    -- iterate over returned values
     for i, v in ipairs(vl) do
-      -- this is to add to the correct field slot
-      local ri = 1
-      for fn, fslot in pairs(readerSlot.fieldSlots) do
-        if ri == i then
-          addToDataQueue(fslot, v)
-          break
-        end
-        ri = ri + 1
-      end
+      local fslot = readerSlot.readOrder[i]
+      addToDataQueue(fslot, v)
     end
   end
 end
@@ -37,7 +30,7 @@ function addToDataQueue(measurementId, value)
   table.insert(dataQueue, dataItemToString(dataItem))
 
   -- When last heap lower than config value then save dataQueue to file
-  local lastNodeHeap = lastValues[cfg.readerSlots.nodeHeap.fieldSlots.heap_size]
+  local lastNodeHeap = lastValues[cfg.readerSlots.sys.fieldSlots.heap_size_b]
   if (lastNodeHeap and lastNodeHeap <= cfg.toFileWhenHeap) then
     file.open(cfg.dataFileName, 'a+')
 

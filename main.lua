@@ -2,14 +2,13 @@ print('main ...')
 
 require('ntp_sync')
 
--- fields: [1]delta tz, [2]readerId, [3]value
 dataQueue = {}
 
 reverseReaderSlots = {}
 
 for mn, v in pairs(cfg.readerSlots) do
-   for fn, slot in pairs(v.fieldSlots) do
-    reverseReaderSlots[slot] = {measurementName = mn, fieldName = fn}
+  for fn, slot in pairs(v.fieldSlots) do
+    reverseReaderSlots[slot] = {measure = mn, field = fn}
   end
 end
 
@@ -30,20 +29,11 @@ function unrequire(m)
   _G[m] = nil
 end
 
--- drivers
-
--- readers
--- for i,reader in ipairs(cfg.sensorReaders) do
---     print("loading "..reader.."...")
---     require(reader)
--- end
--- require('reader_others')
-
--- setup main events
-
 require('transmission')
 require('read_round')
 
+
+require('wifi_client')
 -- Unrequire after 10 sec
 timerAllocation.initAlarm = tmr.create()
 timerAllocation.initAlarm:alarm(10000, tmr.ALARM_SINGLE, function()

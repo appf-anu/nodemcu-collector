@@ -21,17 +21,14 @@ enduser_setup.start(
   function()
     print("Connected to wifi as:" .. wifi.sta.getip())
     wifi.sta.autoconnect(1)
-    print("Giving user 2 minutes grace...")
-    tmr.create():alarm(120000, tmr.ALARM_SINGLE, function()
-        print("stopping ap")
-        enduser_setup.stop()
-    end)
+    print("5 seconds until enduser_setup shutdown...")
     appStatus.wifiConnected = true
     tmr.create():alarm(5000, tmr.ALARM_SINGLE, function()
         print("syncing clock to NTP")
         startNtpSync()
+        enduser_setup.stop()
+        appStatus.configured = true
     end)
-    
   end,
   function(err, str)
     print("enduser_setup: Err #" .. err .. ": " .. str)

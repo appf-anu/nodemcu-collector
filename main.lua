@@ -4,14 +4,6 @@ require('ntp_sync')
 
 dataQueue = {}
 
-reverseReaderSlots = {}
-
-for mn, v in pairs(cfg.readerSlots) do
-  for fn, slot in pairs(v.fieldSlots) do
-    reverseReaderSlots[slot] = {measure = v.measurementName, field = fn}
-  end
-end
-
 function dataItemToString(dataItem)
   return dataItem[1] .. ',' .. dataItem[2] .. ',' .. dataItem[3]
 end
@@ -29,13 +21,13 @@ function unrequire(m)
   package.loaded[m] = nil
   _G[m] = nil
 end
-
-node.compile('transmission.lua')
+print(node.heap())
 require('transmission')
-node.compile('read_round.lua')
+print(node.heap())
 require('read_round')
-
+print(node.heap())
 require('wifi_client')
+print(node.heap())
 -- Unrequire after 10 sec
 timerAllocation.initAlarm = tmr.create()
 timerAllocation.initAlarm:alarm(10000, tmr.ALARM_SINGLE, function()
@@ -43,4 +35,5 @@ timerAllocation.initAlarm:alarm(10000, tmr.ALARM_SINGLE, function()
   unrequire('status')
   unrequire('timers')
   unrequire('pins')
+  unrequire('wifi_client')
 end)

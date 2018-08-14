@@ -16,7 +16,6 @@ function doTransmission()
       dataItem = file.readline()
       if (dataItem) then
         dataItem = string.sub(dataItem, 1, (#dataItem - 1))
-        print('Readline: ' .. dataItem)
         table.insert(currentDataBlock, dataItem)
       end
     until (dataItem == nil or #currentDataBlock >= cfg.transmissionBlock)
@@ -48,8 +47,6 @@ function doTransmission()
       end
     until (dataItem == nil or #currentDataBlock >= cfg.transmissionBlock)
   end
-
-  print('#dataQueue: ' .. #dataQueue .. ' #currentDataBlock: ' .. #currentDataBlock)
 
   if (#currentDataBlock > 0 and appStatus.wifiConnected) then
     sendCurrentBlock()
@@ -95,6 +92,15 @@ function sendCurrentBlock()
 end
 
 function sendToInflux(sck, c)
+
+  local reverseReaderSlots = {}
+
+  for rtag, v in pairs(cfg.readerSlots) do
+    for fn, slot in pairs(v.fieldSlots) do
+      reverseReaderSlots[slot] = {tag = rtag, measure = v.measurementName, field = fn}
+    end
+  end
+
   local tagsLine = ''
   for tag, value in pairs(cfg.influxTags) do
     tagsLine = tagsLine .. tag .. '=' .. value .. ','
@@ -107,23 +113,23 @@ function sendToInflux(sck, c)
     if (dataItem[2] and dataItem[3]) then
       -- remember this is a string until you convert it to a number!
       local vs = tonumber(dataItem[2])
-
       local rrs = reverseReaderSlots[vs]
+
       ifl = ifl ..
-        rrs.measure .. ',' .. tagsLine .. ' ' .. 
-        rrs.field ..'=' .. dataItem[3] .. ' ' .. dataItem[1] .. '\n'
+        rrs.measure..','..tagsLine..",stype="..rrs.tag..' '..
+        rrs.field..'='..dataItem[3]..' '..dataItem[1]..'\n'
     end
   end
   print(ifl)
   local request =
-    'POST ' .. '/write?db=' .. cfg.influxDB.dbname ..
-    '&u=' .. cfg.influxDB.username .. '&p=' .. cfg.influxDB.password ..
-    '&precision=s' .. ' HTTP/1.1\n' ..
-    'Host: ' .. cfg.influxDB.host .. '\n' ..
+    'POST '..'/write?db='..cfg.influxDB.dbname..
+    '&u='..cfg.influxDB.username..'&p='..cfg.influxDB.password..
+    '&precision=s'..' HTTP/1.1\n' ..
+    'Host: '..cfg.influxDB.host..'\n'..
     'Connection: close\n' ..
     'Content-Type: \n' ..
-    'Content-Length: ' .. string.len(ifl) .. '\n' ..
-    '\n' .. ifl
+    'Content-Length: '..string.len(ifl)..'\n'..
+    '\n'..ifl
 
   sck:send(request)
 end

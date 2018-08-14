@@ -5,4 +5,5 @@ appStatus = {
   baseTz = false,
   dataFileExists = false,
   lastSeekPosition = 0,
+  configured = false,
 }

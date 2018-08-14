@@ -8,7 +8,7 @@ reverseReaderSlots = {}
 
 for mn, v in pairs(cfg.readerSlots) do
   for fn, slot in pairs(v.fieldSlots) do
-    reverseReaderSlots[slot] = {measure = mn, field = fn}
+    reverseReaderSlots[slot] = {measure = v.measurementName, field = fn}
   end
 end
 
@@ -24,14 +24,16 @@ function stringToDataItem(string)
   end
   return dataItem
 end
+
 function unrequire(m)
   package.loaded[m] = nil
   _G[m] = nil
 end
 
+node.compile('transmission.lua')
 require('transmission')
+node.compile('read_round.lua')
 require('read_round')
-
 
 require('wifi_client')
 -- Unrequire after 10 sec
@@ -40,6 +42,5 @@ timerAllocation.initAlarm:alarm(10000, tmr.ALARM_SINGLE, function()
   unrequire('config')
   unrequire('status')
   unrequire('timers')
-  -- unrequire('reader_slots')
   unrequire('pins')
 end)

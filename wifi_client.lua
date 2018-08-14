@@ -12,15 +12,6 @@ wifi.eventmon.register(wifi.STA_CONNECTING, function(previousState)
     end
 end)
 
--- wifi.eventmon.register(wifi.STA_GOTIP, function()
---     if wifi.sta.getip() == nil then
---         return
---     end
---     print("WiFi connection established, IP address: " .. wifi.sta.getip())
---     appStatus.wifiConnected = true
-    
--- end)
-
 wifi.setmode(wifi.STATIONAP)
 
 wifi.ap.config({ssid="Node-"..node.chipid(), auth=wifi.OPEN})

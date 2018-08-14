@@ -8,8 +8,6 @@ function doTransmission()
   appStatus.transmitting = true
 
   local dataItem
-
-  -- Fill up currrentDataBlock from data storage file
   if (appStatus.dataFileExists and #currentDataBlock == 0) then
     file.open(cfg.dataFileName)
     file.seek('set', appStatus.lastSeekPosition)
@@ -33,8 +31,6 @@ function doTransmission()
       file.close()
     end
   end
-
-  -- Fill up currentDataBlock from dataQueue
   if (#currentDataBlock == 0 and #dataQueue > 0) then
     local itemsToCopy
     if (#dataQueue > cfg.transmissionBlock) then
@@ -70,7 +66,6 @@ function sendCurrentBlock()
   tcpSocket:on('connection', sendToInflux)
 
   tcpSocket:on('disconnection', function(sck, c)
-    print('Socket disconnection')
     appStatus.transmitting = false
 
     if (#currentDataBlock == 0 and (#dataQueue > 0 or appStatus.dataFileExists)) then
@@ -79,7 +74,6 @@ function sendCurrentBlock()
   end)
 
   tcpSocket:on('reconnection', function(sck, c)
-    print('Socket reconnection')
     appStatus.transmitting = false
   end)
 
@@ -120,20 +114,16 @@ function sendToInflux(sck, c)
         rrs.field ..'=' .. dataItem[3] .. ' ' .. dataItem[1] .. '\n'
     end
   end
-
-  local influxUri = '/write?db=' .. cfg.influxDB.dbname ..
-    '&u=' .. cfg.influxDB.username .. '&p=' .. cfg.influxDB.password ..
-    '&precision=s'
-
+  print(ifl)
   local request =
-    'POST ' .. influxUri .. ' HTTP/1.1\n' ..
+    'POST ' .. '/write?db=' .. cfg.influxDB.dbname ..
+    '&u=' .. cfg.influxDB.username .. '&p=' .. cfg.influxDB.password ..
+    '&precision=s' .. ' HTTP/1.1\n' ..
     'Host: ' .. cfg.influxDB.host .. '\n' ..
     'Connection: close\n' ..
     'Content-Type: \n' ..
     'Content-Length: ' .. string.len(ifl) .. '\n' ..
     '\n' .. ifl
-
-  print(request)
 
   sck:send(request)
 end

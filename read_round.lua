@@ -1,7 +1,6 @@
 print('read_round ...')
 
 function doReadRound()
-  if appStatus.configured then
     for key, readerSlot in pairs(cfg.readerSlots) do
       -- get values
       local vl = {readerSlot.reader()}
@@ -11,7 +10,6 @@ function doReadRound()
         addToDataQueue(fslot, v)
       end
     end
-  end
 end
 
 function addToDataQueue(measurementId, value)

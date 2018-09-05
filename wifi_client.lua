@@ -2,7 +2,7 @@ print('wifi_client ...')
 print('MAC: ', wifi.sta.getmac())
 print('chip: ', node.chipid())
 
-wifi.sta.clearconfig()
+-- wifi.sta.clearconfig()
 --register events for wifi reconnect
 wifi.eventmon.register(wifi.STA_CONNECTING, function(previousState)
     if(previousState == wifi.STA_GOTIP) then
@@ -18,10 +18,10 @@ wifi.eventmon.register(wifi.STA_GOTIP, function()
     print("STATION_GOT_IP")
     print("WiFi connection established, IP address: " .. wifi.sta.getip())
     appStatus.wifiConnected = true
-    appStatus.configured = true 
+    appStatus.configured = true
 end)
-
-if cfg.ap ~= nil then
+--
+-- if cfg.ap ~= nil then
     wifi.setmode(wifi.STATIONAP)
 
     wifi.ap.config({ssid="Node-"..node.chipid(), auth=wifi.OPEN})
@@ -37,15 +37,14 @@ if cfg.ap ~= nil then
             print("syncing clock to NTP")
             startNtpSync()
             enduser_setup.stop()
-            appStatus.configured = true
+            wifi.setmode(wifi.STATION)
         end)
       end,
       function(err, str)
         print("enduser_setup: Err #" .. err .. ": " .. str)
       end
     )
-else
-    wifi.setphymode(wifi.PHYMODE_B)
-    wifi.setmode(wifi.STATION)
-    wifi.sta.config({ssid = cfg.wifiSsid, pwd = cfg.wifiPass, auto = true})
-end
+-- else
+--     wifi.setmode(wifi.STATION)
+--     wifi.sta.config({ssid = cfg.wifiSsid, pwd = cfg.wifiPass, auto = true})
+-- end

@@ -1,15 +1,13 @@
 print('read_round ...')
 
 function doReadRound()
-  if appStatus.configured then
-    for key, readerSlot in pairs(cfg.readerSlots) do
-      -- get values
-      local vl = {readerSlot.reader()}
-      -- iterate over returned values
-      for i, v in ipairs(vl) do
-        local fslot = readerSlot.readOrder[i]
-        addToDataQueue(fslot, v)
-      end
+  for key, readerSlot in pairs(cfg.readerSlots) do
+    -- get values
+    local vl = {readerSlot.reader()}
+    -- iterate over returned values
+    for i, v in ipairs(vl) do
+      local fslot = readerSlot.readOrder[i]
+      addToDataQueue(fslot, v)
     end
   end
 end

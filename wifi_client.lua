@@ -20,31 +20,29 @@ wifi.eventmon.register(wifi.STA_GOTIP, function()
     appStatus.wifiConnected = true
     appStatus.configured = true
 end)
---
--- if cfg.ap ~= nil then
-    wifi.setmode(wifi.STATIONAP)
+if cfg.wifiSsid != nil and cfg.wifiPass != nil then
+  wifi.setmode(wifi.STATION)
+  wifi.sta.config({ssid = cfg.wifiSsid, pwd = cfg.wifiPass, auto = true})
+else
+  wifi.setmode(wifi.STATIONAP)
+  wifi.ap.config({ssid="Node-"..node.chipid(), auth=wifi.OPEN})
+  enduser_setup.manual(true)
 
-    wifi.ap.config({ssid="Node-"..node.chipid(), auth=wifi.OPEN})
-    enduser_setup.manual(true)
-
-    enduser_setup.start(
-      function()
-        print("Connected to wifi as:" .. wifi.sta.getip())
-        wifi.sta.autoconnect(1)
-        print("5 seconds until enduser_setup shutdown...")
-        appStatus.wifiConnected = true
-        tmr.create():alarm(5000, tmr.ALARM_SINGLE, function()
-            print("syncing clock to NTP")
-            startNtpSync()
-            enduser_setup.stop()
-            wifi.setmode(wifi.STATION)
-        end)
-      end,
-      function(err, str)
-        print("enduser_setup: Err #" .. err .. ": " .. str)
-      end
-    )
--- else
---     wifi.setmode(wifi.STATION)
---     wifi.sta.config({ssid = cfg.wifiSsid, pwd = cfg.wifiPass, auto = true})
--- end
+  enduser_setup.start(
+    function()
+      print("Connected to wifi as:" .. wifi.sta.getip())
+      wifi.sta.autoconnect(1)
+      print("5 seconds until enduser_setup shutdown...")
+      appStatus.wifiConnected = true
+      tmr.create():alarm(5000, tmr.ALARM_SINGLE, function()
+          print("syncing clock to NTP")
+          startNtpSync()
+          enduser_setup.stop()
+          wifi.setmode(wifi.STATION)
+      end)
+    end,
+    function(err, str)
+      print("enduser_setup: Err #" .. err .. ": " .. str)
+    end
+  )
+end

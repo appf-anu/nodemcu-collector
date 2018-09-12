@@ -11,19 +11,9 @@ wifi.setmode(wifi.STATION)
 wifi.sta.autoconnect(1)
 
 wifi.sta.config(station_cfg)
-=======
+
 -- wifi.sta.clearconfig()
 --register events for wifi reconnect
-wifi.eventmon.register(wifi.STA_CONNECTING, function(previousState)
-    if(previousState == wifi.STA_GOTIP) then
-        print("Station lost connection with access point\n\tAttempting to reconnect...")
-        appStatus.wifiConnected = false
-    else
-        print("STA_CONNECTING")
-        print(wifi.sta.getip())
-    end
-end)
->>>>>>> a9b4ba6f20a10c06fe80990ad926e0d9eb9df540
 
 wifi.eventmon.register(wifi.eventmon.STA_GOT_IP, function()
     print("STATION_GOT_IP")
@@ -32,19 +22,16 @@ wifi.eventmon.register(wifi.eventmon.STA_GOT_IP, function()
     end
     print("WiFi connection established, IP address: " .. wifi.sta.getip())
     appStatus.wifiConnected = true
-<<<<<<< HEAD
     startNtpSync()
 end)
 
 wifi.eventmon.register(wifi.STA_CONNECTING, function(previousState)
-    if(previousState == wifi.STA_GOTIP) then 
+    if(previousState == wifi.STA_GOTIP) then
         print("Station lost connection with access point\n\tAttempting to reconnect...")
         appStatus.wifiConnected = false
     else
         print("STATION_CONNECTING")
     end
-end)
-=======
 end)
 
 if cfg.wifiSsid ~= nil and cfg.wifiPass ~= nil then
@@ -73,4 +60,3 @@ else
     end
   )
 end
->>>>>>> a9b4ba6f20a10c06fe80990ad926e0d9eb9df540

@@ -38,7 +38,6 @@ tmr.create():alarm(7000, tmr.ALARM_SINGLE, function()
   -- print("heap: "..node.heap())
 end)
 
->>>>>>> a9b4ba6f20a10c06fe80990ad926e0d9eb9df540
 -- Unrequire after 10 sec
 tmr.create():alarm(10000, tmr.ALARM_SINGLE, function()
   unrequire('config')

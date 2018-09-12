@@ -1,14 +1,13 @@
 print('read_round ...')
 
 function doReadRound()
-  for key, readerSlot in pairs(cfg.readerSlots) do
-    -- get values
-    local vl = {readerSlot.reader()}
-    -- iterate over returned values
-    for i, v in ipairs(vl) do
-      local fslot = readerSlot.readOrder[i]
-      addToDataQueue(fslot, v)
-    end
+  for key, readerSlot in pairs(readerSlots) do
+    readerSlot.reader(function(...)
+      for i, v in ipairs(arg) do
+        local fslot = readerSlot.readOrder[i]
+        addToDataQueue(fslot, v)
+      end
+    end)
   end
 end
 
@@ -39,7 +38,7 @@ function addToDataQueue(measurementId, value)
         file.writeline(dataItemToString(dataItem))
       end
     end
-    
+
     file.close()
     appStatus.dataFileExists = true
   end

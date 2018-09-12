@@ -1,22 +1,19 @@
-function readBme680()
-    which = bme280.setup()
+function readBme680(cb)
+    which = bme680.setup()
     if which == nil then
-        return nil, nil, nil, nil
+        return nil
     end
-    local temp, pres, humi, gas, QNH = bme680.read(cfg.altitude)
-    local i = 0
-    while (temp == nil or humi == nil) and i < 100 do
-        temp, pres, humi, gas, QNH = bme680.read(cfg.altitude)
-        i = i + 1
-    end
-    if temp ~= nil then
-        temp = temp / 100
-    end
-    if humi ~= nil then
-        humi = humi / 1000
-    end
-    if QNH ~= nil then
-        QNH = QNH / 10
-    end
-  return temp, humi, gas, QNH
+    bme680.startreadout(150, function ()
+        local temp_c, pa_p, rh_pc, gasr, qnh_p = bme680.read(cfg.altitude)
+        if temp_c then
+            temp_c = temp_c/100
+            pa_p = pa_p/100
+            qnh_p = qnh_p/10
+            rh_pc = rh_pc/1000
+            dp_c = bme680.dewpoint(rh_pc, temp_c)
+            dp_c = dp_c/100
+            cb(temp_c,pa_p,rh_pc,dp_c,qnh_p)
+        end
+    end)
+    return true
 end

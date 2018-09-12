@@ -22,15 +22,22 @@ function unrequire(m)
   _G[m] = nil
 end
 
-require('transmission')
-print("heap: "..node.heap())
-require('read_round')
-print("heap: "..node.heap())
 require('wifi_client')
 print("heap: "..node.heap())
+
+tmr.create():alarm(7000, tmr.ALARM_SINGLE, function()
+  require('reader_slots')
+  print("heap: "..node.heap())
+  require('transmission_http')
+  print("heap: "..node.heap())
+  require('read_round')
+  print("heap: "..node.heap())
+  -- require('telnetsrv')
+  -- print("heap: "..node.heap())
+end)
+
 -- Unrequire after 10 sec
-timerAllocation.initAlarm = tmr.create()
-timerAllocation.initAlarm:alarm(10000, tmr.ALARM_SINGLE, function()
+tmr.create():alarm(10000, tmr.ALARM_SINGLE, function()
   unrequire('config')
   unrequire('status')
   unrequire('timers')

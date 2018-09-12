@@ -15,6 +15,7 @@ function readBh1750()
     i2c.stop(0)
     lux = l/100
     calibPar = lux * cfg.parCalibration
+    -- calibPar = lux / cfg.parCalibrationDivisor
     -- print("lux: "..(l / 100).."."..(l % 100).." lx")
     return lux, calibPar
 end

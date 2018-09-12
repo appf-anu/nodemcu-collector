@@ -1,6 +1,16 @@
-function readBmx280()
+function getVPD(temp, hum)
+  -- SVP
+  local es = 0.6108 * exp(17.27 * temp / (temp + 237.3))
+  -- AVP
+  local ea = hum / 100.0 * es
+  local vpd_kPa = (ea - es) * -1
+  local ah_kgm3 = ea / (461.5 * (temp + 273.15)) * 1000
+  return es, ea, vpd_kPa, ah_kgm3
+end
+
+function readBme280()
     which = bme280.setup()
-    if which == nil then
+    if which == nil or which == 1 then
         return nil, nil, nil
     end
     local temp, pres, humi, QNH

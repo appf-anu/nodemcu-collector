@@ -21,7 +21,6 @@ wifi.eventmon.register(wifi.STA_GOTIP, function()
     end
     print("WiFi connection established, IP address: " .. wifi.sta.getip())
     appStatus.wifiConnected = true
-    appStatus.configured = true
 end)
 
 if cfg.wifiSsid ~= nil and cfg.wifiPass ~= nil then

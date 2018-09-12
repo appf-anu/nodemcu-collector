@@ -21,7 +21,7 @@ function unrequire(m)
   package.loaded[m] = nil
   _G[m] = nil
 end
-require('transmission_http')
+require('transmission')
 require('reader_slots')
 require('read_round')
 require('wifi_client')
@@ -31,7 +31,7 @@ print("heap: "..node.heap())
 tmr.create():alarm(10000, tmr.ALARM_SINGLE, function()
   unrequire('config')
   unrequire('status')
-  unrequire('transmission_http')
+  unrequire('transmission')
   unrequire('timers')
   unrequire('pins')
   unrequire('wifi_client')

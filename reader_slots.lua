@@ -1,7 +1,13 @@
 print('reader_slots...')
 
 function readSys(cb)
- cb(node.heap(), wifi.sta.getrssi())
+  local rssi, heap
+  heap = node.heap()
+  rssi = wifi.sta.getrssi()
+  if rssi == nil or heap == nil then
+    return
+  end
+ cb(heap, rssi)
 end
 
 require('reader_bh1750')

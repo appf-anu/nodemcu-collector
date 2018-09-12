@@ -3,9 +3,9 @@ function readDht(cb)
 
   if status == dht.OK then
   elseif status == dht.ERROR_CHECKSUM then
-      temp, humi = nil, nil
+      return
   elseif status == dht.ERROR_TIMEOUT then
-      temp, humi = nil, nil
+      return
   end
   cb(temp, humi)
 end

@@ -57,7 +57,7 @@ end
 function sendCurrentBlock()
   local reverseReaderSlots = {}
   -- print("Connected to "..cfg.influxDB.host)
-  for rtag, v in pairs(cfg.readerSlots) do
+  for rtag, v in pairs(readerSlots) do
     for fn, slot in pairs(v.fieldSlots) do
       reverseReaderSlots[slot] = {tag = rtag, measure = v.measurementName, field = fn}
     end
@@ -80,16 +80,7 @@ function sendCurrentBlock()
     end
   end
   print(ifl)
-  -- local request =
-  --   'POST '..'/write?db='..cfg.influxDB.dbname..
-  --   '&u='..cfg.influxDB.username..'&p='..cfg.influxDB.password..
-  --   '&precision=s'..' HTTP/1.1\n' ..
-  --   'Host: '..cfg.influxDB.host..'\n'..
-  --   'Connection: close\n' ..
-  --   'Content-Type: \n' ..
-  --   'Content-Length: '..string.len(ifl)..'\n'..
-  --   '\n'..ifl
-    local uri = cfg.influxDB.url..'write?db='..cfg.influxDB.dbname..
+    local uri = 'http://'..cfg.influxDB.host..':'..cfg.influxDB.port..'/write?db='..cfg.influxDB.dbname..
     '&u='..cfg.influxDB.username..'&p='..cfg.influxDB.password..
     '&precision=s'
     print(uri)

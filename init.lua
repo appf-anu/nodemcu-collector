@@ -8,7 +8,7 @@ timerAllocation = {}
 
 require('config')
 node.setcpufreq(cfg.nodeCpuFreq)
-
+--
 print("compiling reader_bme280.lua")
 node.compile("reader_bme280.lua")
 print("compiling reader_bme680.lua")
@@ -17,12 +17,15 @@ print("compiling reader_dht.lua")
 node.compile("reader_dht.lua")
 print("compiling reader_bh1750.lua")
 node.compile("reader_bh1750.lua")
-
-print("compiling reader_slots.lua")
-node.compile("reader_slots.lua")
-
+--
+-- print("compiling reader_slots.lua")
+-- node.compile("reader_slots.lua")
+--
+print("compiling transmission_http.lua")
+node.compile("transmission_http.lua")
 print("compiling transmission.lua")
 node.compile("transmission.lua")
+
 print("compiling wifi_client.lua")
 node.compile("wifi_client.lua")
 print("compiling ntp_sync.lua")
@@ -31,6 +34,9 @@ print("compiling telnetsrv.lua")
 node.compile("telnetsrv.lua")
 print("compiling read_round.lua")
 node.compile("read_round.lua")
+
+print("compiling main.lua")
+node.compile("main.lua")
 
 require('pins')
 require('status')
@@ -47,6 +53,6 @@ for i=0,127 do
 end
 
 timerAllocation.initAlarm = tmr.create()
-timerAllocation.initAlarm:alarm(10000, tmr.ALARM_SINGLE, function()
+timerAllocation.initAlarm:alarm(5000, tmr.ALARM_SINGLE, function()
   require('main')
 end)

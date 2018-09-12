@@ -1,26 +1,18 @@
 print('read_round ...')
 
 function doReadRound()
-<<<<<<< HEAD
-    for key, readerSlot in pairs(cfg.readerSlots) do
-      -- get values
-      local vl = {readerSlot.reader()}
-      -- iterate over returned values
-      for i, v in ipairs(vl) do
-        local fslot = readerSlot.readOrder[i]
-        addToDataQueue(fslot, v)
-      end
-    end
-=======
   for key, readerSlot in pairs(readerSlots) do
     readerSlot.reader(function(...)
       for i, v in ipairs(arg) do
         local fslot = readerSlot.readOrder[i]
-        addToDataQueue(fslot, v)
+        if v ~= nil then
+          addToDataQueue(fslot, ""..v)
+        else
+          print('Nil value for ' .. key .. '['..i..']')
+        end
       end
     end)
   end
->>>>>>> a9b4ba6f20a10c06fe80990ad926e0d9eb9df540
 end
 
 function addToDataQueue(measurementId, value)

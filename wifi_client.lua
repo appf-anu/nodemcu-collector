@@ -1,16 +1,10 @@
 print('wifi_client ...')
 print('MAC: ', wifi.sta.getmac())
-print('chip: ', node.chipid())
-station_cfg={}
-station_cfg.ssid = cfg.ssid
-station_cfg.pwd = cfg.pwd
-station_cfg.save = true
-station_cfg.auto=true
-wifi.setphymode(wifi.PHYMODE_N)
+
+wifi.setphymode(wifi.PHYMODE_G)
 wifi.setmode(wifi.STATION)
 wifi.sta.autoconnect(1)
 
-wifi.sta.config(station_cfg)
 
 -- wifi.sta.clearconfig()
 --register events for wifi reconnect

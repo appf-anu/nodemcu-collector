@@ -21,13 +21,13 @@ function unrequire(m)
   package.loaded[m] = nil
   _G[m] = nil
 end
-print(node.heap())
+
 require('transmission')
-print(node.heap())
+print("heap: "..node.heap())
 require('read_round')
-print(node.heap())
+print("heap: "..node.heap())
 require('wifi_client')
-print(node.heap())
+print("heap: "..node.heap())
 -- Unrequire after 10 sec
 timerAllocation.initAlarm = tmr.create()
 timerAllocation.initAlarm:alarm(10000, tmr.ALARM_SINGLE, function()

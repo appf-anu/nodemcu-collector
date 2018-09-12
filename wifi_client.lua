@@ -16,11 +16,15 @@ end)
 
 wifi.eventmon.register(wifi.STA_GOTIP, function()
     print("STATION_GOT_IP")
+    if wifi.sta.getip() == nil then
+      return
+    end
     print("WiFi connection established, IP address: " .. wifi.sta.getip())
     appStatus.wifiConnected = true
     appStatus.configured = true
 end)
-if cfg.wifiSsid != nil and cfg.wifiPass != nil then
+
+if cfg.wifiSsid ~= nil and cfg.wifiPass ~= nil then
   wifi.setmode(wifi.STATION)
   wifi.sta.config({ssid = cfg.wifiSsid, pwd = cfg.wifiPass, auto = true})
 else

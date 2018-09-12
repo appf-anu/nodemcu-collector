@@ -24,9 +24,23 @@ end
 require('transmission')
 require('read_round')
 require('wifi_client')
+require('wifi_client')
+print("heap: "..node.heap())
+
+tmr.create():alarm(7000, tmr.ALARM_SINGLE, function()
+  require('reader_slots')
+  print("heap: "..node.heap())
+  require('transmission_http')
+  print("heap: "..node.heap())
+  require('read_round')
+  print("heap: "..node.heap())
+  -- require('telnetsrv')
+  -- print("heap: "..node.heap())
+end)
+
+>>>>>>> a9b4ba6f20a10c06fe80990ad926e0d9eb9df540
 -- Unrequire after 10 sec
-timerAllocation.initAlarm = tmr.create()
-timerAllocation.initAlarm:alarm(10000, tmr.ALARM_SINGLE, function()
+tmr.create():alarm(10000, tmr.ALARM_SINGLE, function()
   unrequire('config')
   unrequire('status')
   unrequire('timers')

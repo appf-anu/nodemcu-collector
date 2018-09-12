@@ -1,4 +1,4 @@
-function readBh1750()
+function readBh1750(cb)
     i2c.start(0)
     found = i2c.address(0, 0x23, i2c.TRANSMITTER)
     if not found then
@@ -15,6 +15,8 @@ function readBh1750()
     i2c.stop(0)
     lux = l/100
     calibPar = lux * cfg.parCalibration
+    -- calibPar = lux / cfg.parCalibrationDivisor
     -- print("lux: "..(l / 100).."."..(l % 100).." lx")
-    return lux, calibPar
+    cb(lux, calibPar)
+    -- return lux, calibPar
 end

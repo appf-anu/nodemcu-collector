@@ -1,7 +1,7 @@
 
 gpioPins = {
   indicator_led = 5,
-  sda = 6,
-  scl = 5,
-  dht = 4
+  sda = 3,
+  scl = 4,
+  dht = 5
 }

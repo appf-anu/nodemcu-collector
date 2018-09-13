@@ -1,14 +1,29 @@
 print('init ...')
-
 -- Settings
 cfg = {}
 gpioPins ={}
 appStatus = {}
 timerAllocation = {}
 
+function dump(o,z)
+   if z == nil then z = 0 end
+   if type(o) == 'table' then
+      local s = '\n'
+      local prefix = string.rep(' ',z)
+      for k,v in pairs(o) do
+         if type(v) == 'table' then z = z+1 s = s..'\n' end
+         s = s..prefix..k..': '..string.rep(' ', 20-#k) .. dump(v, z) .. '\n'
+      end
+      return s
+   else
+      return tostring(o)
+   end
+end
+
 require('config')
 node.setcpufreq(cfg.nodeCpuFreq)
 
+print(dump(cfg))
 -- print("compiling reader_bme280.lua")
 -- node.compile("reader_bme280.lua")
 -- print("compiling reader_bme680.lua")
@@ -38,7 +53,6 @@ node.setcpufreq(cfg.nodeCpuFreq)
 require('pins')
 require('status')
 require('timers')
--- require('telnetsrv')
 
 i2c.setup(0, gpioPins.sda, gpioPins.scl, i2c.SLOW)
 
@@ -50,6 +64,6 @@ for i=0,127 do
 end
 
 timerAllocation.initAlarm = tmr.create()
-timerAllocation.initAlarm:alarm(5000, tmr.ALARM_SINGLE, function()
+timerAllocation.initAlarm:alarm(10000, tmr.ALARM_SINGLE, function()
   require('main')
 end)

@@ -59,40 +59,31 @@ function sendCurrentBlock()
   local tcpSocket
   tcpSocket = net.createConnection(net.TCP, 0)
   tcpSocket:connect(cfg.influxDB.port, cfg.influxDB.host)
-
   tcpSocket:on('connection', sendToInflux)
-
   tcpSocket:on('disconnection', function(sck, c)
     appStatus.transmitting = false
-
     if (#currentDataBlock == 0 and (#dataQueue > 0 or appStatus.dataFileExists)) then
       node.task.post(node.task.MEDIUM_PRIORITY, doTransmission)
     end
   end)
-
   tcpSocket:on('reconnection', function(sck, c)
     appStatus.transmitting = false
   end)
-
   tcpSocket:on('receive', function(sck, response)
     local findStart, findEnd
     print(response)
-
     findStart, findEnd = string.find(response, 'HTTP/1.1 200', 0, true)
     if (findStart) then
       currentDataBlock = {}
     end
-
     findStart, findEnd = string.find(response, 'HTTP/1.1 204 No Content', 0, true)
     if (findStart) then
       currentDataBlock = {}
     end
   end)
-
 end
 
 function sendToInflux(sck, c)
-
   local reverseReaderSlots = {}
 
   for rtag, v in pairs(readerSlots) do

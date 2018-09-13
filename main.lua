@@ -21,18 +21,22 @@ function unrequire(m)
   package.loaded[m] = nil
   _G[m] = nil
 end
-require('transmission')
+
 require('reader_slots')
 require('read_round')
+require('transmission')
 require('wifi_client')
+
 print("heap: "..node.heap())
 
 -- Unrequire after 10 sec
 tmr.create():alarm(10000, tmr.ALARM_SINGLE, function()
+  print("unrequiring...")
   unrequire('config')
   unrequire('status')
-  unrequire('transmission')
   unrequire('timers')
   unrequire('pins')
-  unrequire('wifi_client')
+  if cfg.enableTelnet == true and appStatus.wifiConnected then
+    require('telnetsrv')
+  end
 end)

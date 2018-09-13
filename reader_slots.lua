@@ -72,11 +72,8 @@ readerSlots = {
 }
 
 reverseReaderSlots = {}
-
 for rtag, v in pairs(readerSlots) do
   for fn, slot in pairs(v.fieldSlots) do
     reverseReaderSlots[slot] = {tag = rtag, measure = v.measurementName, field = fn}
   end
 end
-
-print(#readerSlots)

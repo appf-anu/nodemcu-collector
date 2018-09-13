@@ -25,49 +25,49 @@ readerSlots = {
   dht22 = {
     measurementName = 'sensors',
     reader = readDht,
-    fieldSlots = {temp_c = 3, rh_pc = 5},
+    fieldSlots = {temp_c = 3, rh_pc = 4},
     readOrder = {[1] = 3,
-                 [2] = 5},
+                 [2] = 4},
   },
   bme280 = {
     measurementName = 'sensors',
     reader = readBme280,
     fieldSlots = {
-        temp_c = 3,
-        pa_p = 4,
-        rh_pc = 5,
-        dp_c = 6,
-        qnh_p = 7
+        temp_c = 5,
+        pa_p = 6,
+        rh_pc = 7,
+        dp_c = 8,
+        qnh_p = 9
     },
-    readOrder = {[1] = 3,
-                 [2] = 4,
-                 [3] = 5,
-                 [4] = 6,
-                 [5] = 7},
+    readOrder = {[1] = 5,
+                 [2] = 6,
+                 [3] = 7,
+                 [4] = 8,
+                 [5] = 9},
   },
   bme680 = {
     measurementName = 'sensors',
     reader = readBme680,
     fieldSlots = {
-        temp_c = 3,
-        pa_p = 4,
-        rh_pc = 5,
-        dp_c = 6,
-        qnh_p = 7,
-        gasr = 8
+        temp_c = 10,
+        pa_p = 11,
+        rh_pc = 12,
+        dp_c = 13,
+        qnh_p = 14,
+        gasr = 15
       },
-    readOrder = {[1] = 3,
-                 [2] = 4,
-                 [3] = 5,
-                 [4] = 6,
-                 [5] = 7,
-                 [6] = 8}
+    readOrder = {[1] = 10,
+                 [2] = 11,
+                 [3] = 12,
+                 [4] = 13,
+                 [5] = 14,
+                 [6] = 15}
   },
   bh1750 = {
     measurementName = 'sensors',
     reader = readBh1750,
-    fieldSlots = {lux = 9, par = 10},
-    readOrder = {[1] = 9, [2] = 10},
+    fieldSlots = {lux = 16, par = 17},
+    readOrder = {[1] = 16, [2] = 17},
   }
 }
 

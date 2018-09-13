@@ -5,7 +5,6 @@ wifi.setphymode(wifi.PHYMODE_G)
 wifi.setmode(wifi.STATION)
 wifi.sta.autoconnect(1)
 
-
 -- wifi.sta.clearconfig()
 --register events for wifi reconnect
 
@@ -39,7 +38,6 @@ else
   enduser_setup.start(
     function()
       print("Connected to wifi as:" .. wifi.sta.getip())
-      wifi.sta.autoconnect(1)
       print("5 seconds until enduser_setup shutdown...")
       appStatus.wifiConnected = true
       tmr.create():alarm(5000, tmr.ALARM_SINGLE, function()

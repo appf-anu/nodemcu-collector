@@ -11,8 +11,8 @@ function readBme680(cb)
         local temp_c, pa_p, rh_pc, gasr, qnh_p = bme680.read(cfg.altitude)
         if temp_c ~= nil then
             temp_c = temp_c/100
-            pa_p = pa_p/10
-            qnh_p = qnh_p/10
+            pa_p = pa_p
+            qnh_p = qnh_p
             rh_pc = rh_pc/1000
             dp_c = bme680.dewpoint(rh_pc, temp_c)
             dp_c = dp_c / 100

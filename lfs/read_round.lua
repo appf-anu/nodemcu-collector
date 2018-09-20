@@ -1,6 +1,19 @@
 print('read_round ...')
-local readerSlots = LFS.reader_slots()[1]
-local reverseReaderSlots = LFS.reader_slots()[2]
+local readerSlots = LFS.reader_slots().readerSlots
+local reverseReaderSlots = LFS.reader_slots().reverseReaderSlots
+function stringToDataItem(string)
+  local dataItem = {}
+  for t, r, v in string.gmatch(string, '(%d+),(%d+),(.+)') do
+    dataItem[1] = t
+    dataItem[2] = r
+    dataItem[3] = v
+  end
+  return dataItem
+end
+
+function dataItemToString(dataItem)
+ return dataItem[1] .. ',' .. dataItem[2] .. ',' .. dataItem[3]
+end
 
 function addToDataQueue(measurementId, value)
   local dataItem, deltaTz
@@ -13,7 +26,7 @@ function addToDataQueue(measurementId, value)
   end
   dataItem = {deltaTz, measurementId, value}
   print('time: ' .. dataItem[1], reverseReaderSlots[measurementId].field ..":"..dataItem[2], 'val: ' .. dataItem[3])
-  table.insert(dataQueue, dataItemToString(dataItem))
+  table.insert(dataQueue,  dataItemToString(dataItem))
 
   if (node.heap() <= cfg.toFileWhenHeap) then
     file.open(cfg.dataFileName, 'a+')

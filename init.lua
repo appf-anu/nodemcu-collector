@@ -1,4 +1,21 @@
 print('init ...')
+
+print('check for lfs.img')
+if file.exists("lfs.img") then
+  print("-----LFS-----")
+  if file.exists("fs.img") then print("moving old lfs img") file.rename("fs.img", "backup.img") end
+  print("moving new lfs.img to staging")
+  file.rename("lfs.img", "fs.img")
+  print("flashing new lfs. will reboot with WDT bootreason")
+  local valid = node.flashreload("fs.img")
+  if not valid then
+    print("invalid img recovering")
+    file.remove("lfs.img")
+    file.rename("backup.img", "lfs.img")
+    node.restart()
+  end
+end
+
 -- Settings
 cfg = {}
 gpioPins ={}
@@ -28,9 +45,12 @@ print(dump(cfg))
 -- print("compiling main.lua")
 -- node.compile("main.lua")
 
-require('pins')
-require('status')
-require('timers')
+require("programData")
+
+
+
+local _initted = pcall(node.flashindex("_init"))
+print("_initted: "..tostring(_initted))
 
 i2c.setup(0, gpioPins.sda, gpioPins.scl, i2c.SLOW)
 

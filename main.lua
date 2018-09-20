@@ -4,40 +4,9 @@ appStatus.dataFileExists = file.exists(cfg.dataFileName)
 
 dataQueue = {}
 
-function dataItemToString(dataItem)
-  return dataItem[1] .. ',' .. dataItem[2] .. ',' .. dataItem[3]
-end
-function stringToDataItem(string)
-  local dataItem = {}
-  for t, r, v in string.gmatch(string, '(%d+),(%d+),(.+)') do
-    dataItem[1] = t
-    dataItem[2] = r
-    dataItem[3] = v
-  end
-  return dataItem
-end
-
-function unrequire(m)
-  package.loaded[m] = nil
-  _G[m] = nil
-end
-
-if file.exists("lfs.img") then
-  print("-----LFS-----")
-  if file.exists("fs.img") then print("removing old lfs img") file.remove("fs.img") end
-  print("moving new lfs.img to staging")
-  file.rename("lfs.img", "fs.img")
-  print("flashing new lfs. will reboot with WDT bootreason")
-  local valid = node.flashreload("fs.img")
-  if not valid then print("invalid img wth") end
-end
-
-local _initted = pcall(node.flashindex("_init"))
-print("_initted: "..tostring(_initted))
-
 function LFS_OTA()
   print("-----OTA-----")
-  LFS.HTTP_OTA(cfg.ota_address, cfg.ota_path)
+  LFS.HTTP_OTA(cfg.otaHost, cfg.otaPath)
 end
 
 gpio.mode(gpioPins.updatePin, gpio.INT)
@@ -47,13 +16,7 @@ timerAllocation.otaUpdate = tmr.create()
 timerAllocation.otaUpdate:register(
   3600000,
   tmr.ALARM_AUTO,
-  function()
-    appStatus.updateHour = appStatus.updateHour - 1
-    if appStatus.updateHour == 0 then
-      appStatus.updateHour = 24
-      LFS_OTA()
-    end
-  end
+  LFS.ota_update
 )
 timerAllocation.otaUpdate.start(timerAllocation.otaUpdate)
 
@@ -61,7 +24,7 @@ gpio.mode(gpioPins.indicatorLed, gpio.OUTPUT)
 local ledState = false
 timerAllocation.flashLed = tmr.create()
 timerAllocation.flashLed:register(
-  250,
+  500,
   tmr.ALARM_AUTO,
   function()
     if ledState == true then

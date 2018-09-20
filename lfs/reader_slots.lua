@@ -141,4 +141,4 @@ for rtag, v in pairs(readerSlots) do
   end
 end
 
-return {readerSlots, reverseReaderSlots}
+return {readerSlots = readerSlots, reverseReaderSlots = reverseReaderSlots}

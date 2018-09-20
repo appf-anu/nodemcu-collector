@@ -8,12 +8,10 @@ if file.exists("lfs.img") then
   file.rename("lfs.img", "fs.img")
   print("flashing new lfs. will reboot with WDT bootreason")
   local valid = node.flashreload("fs.img")
-  if not valid then
-    print("invalid img recovering")
-    file.remove("lfs.img")
-    file.rename("backup.img", "lfs.img")
-    node.restart()
-  end
+  print("invalid img recovering")
+  file.remove("lfs.img")
+  file.rename("backup.img", "lfs.img")
+  node.restart()
 end
 
 -- Settings

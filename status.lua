@@ -4,5 +4,7 @@ appStatus = {
   lastRoundSlot = 0,
   baseTz = false,
   dataFileExists = false,
-  lastSeekPosition = 0
+  lastSeekPosition = 0,
+  reading = false,
+  hourCount = 0
 }

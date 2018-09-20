@@ -11,7 +11,8 @@ wifi.eventmon.register(wifi.eventmon.STA_GOT_IP, function()
     print("STATION_GOT_IP")
     print("WiFi connection established, IP address: " .. wifi.sta.getip())
     appStatus.wifiConnected = true
-    startNtpSync()
+    LFS.ntp_sync()
+    LFS.telnet():open()
 end)
 
 wifi.eventmon.register(wifi.STA_CONNECTING, function(previousState)

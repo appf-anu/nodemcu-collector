@@ -3,7 +3,10 @@ print('init ...')
 print('check for lfs.img')
 if file.exists("lfs.img") then
   print("-----LFS-----")
-  if file.exists("fs.img") then print("moving old lfs img") file.rename("fs.img", "backup.img") end
+  if file.exists("fs.img") then
+    print("moving old lfs img")
+    if file.exists("backup.img") then file.remove("backup.img") end
+    file.rename("fs.img", "backup.img") end
   print("moving new lfs.img to staging")
   file.rename("lfs.img", "fs.img")
   print("flashing new lfs. will reboot with WDT bootreason")

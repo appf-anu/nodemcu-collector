@@ -1,7 +1,17 @@
 print('init ...')
+-- Settings
+cfg = {}
+gpioPins ={}
+appStatus = {}
+timerAllocation = {}
+
+require('config')
+require("programData")
 
 print('check for lfs.img')
+gpio.mode(gpioPins.indicatorLed, gpio.OUTPUT)
 if file.exists("lfs.img") then
+  gpio.write(gpioPins.indicatorLed, gpio.LOW)
   print("-----LFS-----")
   if file.exists("fs.img") then
     print("moving old lfs img")
@@ -16,12 +26,7 @@ if file.exists("lfs.img") then
   file.rename("backup.img", "lfs.img")
   node.restart()
 end
-
--- Settings
-cfg = {}
-gpioPins ={}
-appStatus = {}
-timerAllocation = {}
+gpio.write(gpioPins.indicatorLed, gpio.HIGH)
 
 function dump(o,z)
    if z == nil then z = 0 end
@@ -38,7 +43,6 @@ function dump(o,z)
    end
 end
 
-require('config')
 node.setcpufreq(cfg.nodeCpuFreq)
 
 print(dump(cfg))
@@ -46,8 +50,23 @@ print(dump(cfg))
 -- print("compiling main.lua")
 -- node.compile("main.lua")
 
-require("programData")
 
+local ledState = false
+timerAllocation.flashLed = tmr.create()
+timerAllocation.flashLed:register(
+  50,
+  tmr.ALARM_AUTO,
+  function()
+    if ledState == true then
+      ledState = false
+      gpio.write(gpioPins.indicatorLed, gpio.HIGH)
+    else
+      ledState = true
+      gpio.write(gpioPins.indicatorLed, gpio.LOW)
+    end
+  end
+)
+timerAllocation.flashLed.start(timerAllocation.flashLed)
 
 
 local _initted = pcall(node.flashindex("_init"))
@@ -64,5 +83,7 @@ end
 
 timerAllocation.initAlarm = tmr.create()
 timerAllocation.initAlarm:alarm(10000, tmr.ALARM_SINGLE, function()
+  tmr.stop(timerAllocation.flashLed)
+  gpio.write(gpioPins.indicatorLed, gpio.HIGH)
   require('main')
 end)

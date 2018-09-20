@@ -20,25 +20,6 @@ timerAllocation.otaUpdate:register(
 )
 timerAllocation.otaUpdate.start(timerAllocation.otaUpdate)
 
-gpio.mode(gpioPins.indicatorLed, gpio.OUTPUT)
-local ledState = false
-timerAllocation.flashLed = tmr.create()
-timerAllocation.flashLed:register(
-  500,
-  tmr.ALARM_AUTO,
-  function()
-    if ledState == true then
-      ledState = false
-      gpio.write(gpioPins.indicatorLed, gpio.HIGH)
-    else
-      ledState = true
-      gpio.write(gpioPins.indicatorLed, gpio.LOW)
-    end
-  end
-)
-timerAllocation.flashLed.start(timerAllocation.flashLed)
-
-
 timerAllocation.syncSntp = tmr.create()
 timerAllocation.syncSntp:register(
   3600000,

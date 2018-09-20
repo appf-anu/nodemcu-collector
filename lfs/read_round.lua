@@ -51,6 +51,7 @@ for key, readerSlot in pairs(readerSlots) do
       local fslot = readerSlot.readOrder[i]
       if v ~= nil then
         addToDataQueue(fslot, ""..v)
+        gpio.write(gpioPins.indicatorLed, gpio.LOW)
       else
         print('Nil value for ' .. key .. '['..i..']')
       end

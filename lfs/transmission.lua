@@ -66,6 +66,7 @@ function sendCurrentBlock()
     if (#currentDataBlock == 0 and (#dataQueue > 0 or appStatus.dataFileExists)) then
       node.task.post(node.task.MEDIUM_PRIORITY, LFS.transmission)
     end
+
   end)
 
   tcpSocket:on('reconnection', function(sck, c)
@@ -85,7 +86,7 @@ function sendCurrentBlock()
     end
   end)
 end
-
+if #dataQueue == 0 then gpio.write(gpioPins.indicatorLed, gpio.HIGH) end
 if (appStatus.transmitting or appStatus.reading) then
   return true
 end
@@ -136,3 +137,4 @@ if (#currentDataBlock > 0 and appStatus.wifiConnected) then
 else
   appStatus.transmitting = false
 end
+if #dataQueue == 0 then gpio.write(gpioPins.indicatorLed, gpio.HIGH) end

@@ -6,5 +6,6 @@ appStatus = {
   dataFileExists = false,
   lastSeekPosition = 0,
   reading = false,
-  hourCount = 0
+  hourCount = 0,
+  updateHour = 24
 }

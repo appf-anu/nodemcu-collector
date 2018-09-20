@@ -1,7 +1,9 @@
 -- Availables 0-6
 timerAllocation = {
   initAlarm = 0,
-  transmission = 3,
-  readRound = 4,
-  syncSntp = 5,
+  flashLed = 1,
+  otaUpdate = 2,
+  syncSntp = 3,
+  transmission = 4,
+  readRound = 5
 }

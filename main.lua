@@ -43,6 +43,38 @@ end
 gpio.mode(gpioPins.updatePin, gpio.INT)
 gpio.trig(gpioPins.updatePin, "down", LFS_OTA)
 
+timerAllocation.otaUpdate = tmr.create()
+timerAllocation.otaUpdate:register(
+  3600000,
+  tmr.ALARM_AUTO,
+  function()
+    appStatus.updateHour = appStatus.updateHour - 1
+    if appStatus.updateHour == 0 then
+      appStatus.updateHour = 24
+      LFS_OTA()
+    end
+  end
+)
+timerAllocation.otaUpdate.start(timerAllocation.otaUpdate)
+
+gpio.mode(gpioPins.indicatorLed, gpio.OUTPUT)
+local ledState = false
+timerAllocation.flashLed = tmr.create()
+timerAllocation.flashLed:register(
+  250,
+  tmr.ALARM_AUTO,
+  function()
+    if ledState == true then
+      ledState = false
+      gpio.write(gpioPins.indicatorLed, gpio.HIGH)
+    else
+      ledState = true
+      gpio.write(gpioPins.indicatorLed, gpio.LOW)
+    end
+  end
+)
+timerAllocation.flashLed.start(timerAllocation.flashLed)
+
 
 timerAllocation.syncSntp = tmr.create()
 timerAllocation.syncSntp:register(
@@ -72,15 +104,3 @@ tmr.start(timerAllocation.transmission)
 LFS.wifi_client()
 
 print("heap: "..node.heap())
-
--- -- Unrequire after 10 sec
--- tmr.create():alarm(10000, tmr.ALARM_SINGLE, function()
---   print("unrequiring...")
---   unrequire('config')
---   unrequire('status')
---   unrequire('timers')
---   unrequire('pins')
---   if cfg.enableTelnet == true and appStatus.wifiConnected then
---     require('telnet')
---   end
--- end)

@@ -42,6 +42,6 @@ for i=0,127 do
 end
 
 timerAllocation.initAlarm = tmr.create()
-timerAllocation.initAlarm:alarm(30000, tmr.ALARM_SINGLE, function()
+timerAllocation.initAlarm:alarm(10000, tmr.ALARM_SINGLE, function()
   require('main')
 end)

@@ -33,7 +33,15 @@ timerAllocation.readRound = tmr.create()
 timerAllocation.readRound:register(
   cfg.readRoundInterval,
   tmr.ALARM_AUTO,
-  LFS.read_round
+  function ()
+    LFS.read_round()
+    if appStatus.disp ~= nil then
+      timerAllocation.notification = tmr.create()
+      timerAllocation.notification:alarm(1500, tmr.ALARM_SINGLE, function()
+        LFS.updateScreen()
+      end)
+     end
+  end
 )
 tmr.start(timerAllocation.readRound)
 
@@ -46,5 +54,7 @@ timerAllocation.transmission:register(
 tmr.start(timerAllocation.transmission)
 
 LFS.wifi_client()
+
+drawStatusToOled(3,3, "started")
 
 print("heap: "..node.heap())

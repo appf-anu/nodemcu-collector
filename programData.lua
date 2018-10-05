@@ -7,7 +7,7 @@ gpioPins = {
 }
 timerAllocation = {
   initAlarm = 0,
-  flashLed = 1,
+  notification = 1,
   otaUpdate = 2,
   syncSntp = 3,
   transmission = 4,
@@ -21,5 +21,7 @@ appStatus = {
   dataFileExists = false,
   lastSeekPosition = 0,
   reading = false,
-  ntpHour = 0
+  ntpHour = 0,
+  disp = nil,
+  drawing = false
 }

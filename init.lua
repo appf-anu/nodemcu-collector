@@ -73,6 +73,7 @@ for i=0,127 do
   end
 end
 function drawStatusToOled(x,y, string)
+  if appStatus.disp == nil then return end
   appStatus.disp:clearBuffer()
   appStatus.disp:drawFrame(0,0,64,128)
   appStatus.disp:drawStr(x, y, string)

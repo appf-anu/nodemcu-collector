@@ -19,7 +19,7 @@ if file.exists("lfs.img") then
     file.rename("fs.img", "backup.img") end
   print("moving new lfs.img to staging")
   file.rename("lfs.img", "fs.img")
-  print("flashing new lfs. will reboot with WDT bootreason")
+  print("flashing new lfs. will reboot with hardware watchdog reset")
   local valid = node.flashreload("fs.img")
   print("invalid img recovering")
   file.remove("lfs.img")

@@ -4,6 +4,10 @@ print('MAC: ', wifi.sta.getmac())
 wifi.setphymode(wifi.PHYMODE_G)
 wifi.setmode(wifi.STATION)
 wifi.sta.autoconnect(1)
+ssid, password, bssid_set, bssid=wifi.sta.getconfig()
+print("config ssid: "..ssid)
+ssid, password, bssid_set, bssid=wifi.sta.getdefaultconfig()
+print("defultconfig ssid: "..ssid)
 
 -- wifi.sta.clearconfig()
 

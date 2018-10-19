@@ -1,10 +1,13 @@
-print('wifi_client ...')
+print('wifi_client_enduser ...')
 print('MAC: ', wifi.sta.getmac())
 
 wifi.setphymode(wifi.PHYMODE_G)
 wifi.setmode(wifi.STATION)
 wifi.sta.autoconnect(1)
-
+ssid, password, bssid_set, bssid=wifi.sta.getconfig()
+print("config ssid: "..ssid)
+ssid, password, bssid_set, bssid=wifi.sta.getdefaultconfig()
+print("defultconfig ssid: "..ssid)
 -- wifi.sta.clearconfig()
 --register events for wifi reconnect
 
@@ -15,7 +18,8 @@ wifi.eventmon.register(wifi.eventmon.STA_GOT_IP, function()
     end
     print("WiFi connection established, IP address: " .. wifi.sta.getip())
     appStatus.wifiConnected = true
-    startNtpSync()
+    LFS.telnet():open()
+    LFS.ntp_sync()
 end)
 
 wifi.eventmon.register(wifi.STA_CONNECTING, function(previousState)
@@ -42,7 +46,8 @@ else
       appStatus.wifiConnected = true
       tmr.create():alarm(5000, tmr.ALARM_SINGLE, function()
           print("syncing clock to NTP")
-          startNtpSync()
+          LFS.ntp_sync()
+          LFS.telnet():open()
           enduser_setup.stop()
           wifi.setmode(wifi.STATION)
       end)

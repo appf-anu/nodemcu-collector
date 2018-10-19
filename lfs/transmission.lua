@@ -1,5 +1,4 @@
 print('transmission ...')
-local currentDataBlock = {}
 local readerSlots = LFS.reader_slots().readerSlots
 local reverseReaderSlots = LFS.reader_slots().reverseReaderSlot
 function stringToDataItem(string)
@@ -66,7 +65,6 @@ function sendCurrentBlock()
     if (#currentDataBlock == 0 and (#dataQueue > 0 or appStatus.dataFileExists)) then
       node.task.post(node.task.MEDIUM_PRIORITY, LFS.transmission)
     end
-
   end)
 
   tcpSocket:on('reconnection', function(sck, c)

@@ -4,20 +4,32 @@ cfg = {}
 gpioPins ={}
 appStatus = {}
 timerAllocation = {}
+currentDataBlock = {}
+dataQueue = {}
 
 require('config')
 require("programData")
 
-print('check for lfs.img')
 gpio.mode(gpioPins.indicatorLed, gpio.OUTPUT)
+if file.exists("fs.img") then local oldhash = crypto.toHex(crypto.fhash("sha1", "fs.img")) print("fs.img hash:  "..oldhash) end
+
+print('check for lfs.img')
 if file.exists("lfs.img") then
   gpio.write(gpioPins.indicatorLed, gpio.LOW)
   print("-----LFS-----")
+  local newhash = crypto.toHex(crypto.fhash("sha1", "lfs.img"))
+  print("lfs.img hash: "..newhash)
+
   if file.exists("fs.img") then
-    print("moving old lfs img")
-    if file.exists("backup.img") then file.remove("backup.img") end
-    file.rename("fs.img", "backup.img") end
-  print("moving new lfs.img to staging")
+    if oldhash == newhash then
+      print("reflashing image")
+      file.remove("fs.img")
+    else
+      print("backing up old lfs img")
+      if file.exists("backup.img") then file.remove("backup.img") end
+      file.rename("fs.img", "backup.img") end
+    end
+  print("moving new lfs img to staging area")
   file.rename("lfs.img", "fs.img")
   print("flashing new lfs. will reboot with hardware watchdog reset")
   local valid = node.flashreload("fs.img")

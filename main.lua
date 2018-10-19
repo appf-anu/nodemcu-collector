@@ -12,7 +12,7 @@ if ext_reset_clause == 3 then print("BOOTREASON: software watchdog reset") end
 if ext_reset_clause == 4 then print("BOOTREASON: software restart") end
 if ext_reset_clause == 5 then print("BOOTREASON: wake from deep sleep") end
 if ext_reset_clause == 6 then print("BOOTREASON: external reset") end
-dataQueue = {}
+
 
 function LFS_OTA()
   print("-----OTA-----")
@@ -63,7 +63,7 @@ timerAllocation.transmission:register(
 )
 tmr.start(timerAllocation.transmission)
 
-LFS.wifi_client_enduser()
+LFS.wifi_client()
 
 drawStatusToOled(3,3, "started")
 

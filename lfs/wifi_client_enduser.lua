@@ -36,7 +36,7 @@ if cfg.wifiSsid ~= nil and cfg.wifiPass ~= nil then
   wifi.sta.config({ssid = cfg.wifiSsid, pwd = cfg.wifiPass, auto = true})
 else
   wifi.setmode(wifi.STATIONAP)
-  wifi.ap.config({ssid="Node-"..node.chipid(), auth=wifi.OPEN})
+  wifi.ap.config({ssid=cfg.influxTags.node.."-"..node.chipid(), auth=wifi.OPEN})
   enduser_setup.manual(true)
 
   enduser_setup.start(

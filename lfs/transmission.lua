@@ -1,4 +1,9 @@
-print('transmission ...')
+print('---- transmission ----')
+
+print('#dataQueue: '..#dataQueue)
+print('#currentDataBlock: '..#currentDataBlock)
+print('transmitting: '..tostring(appStatus.transmitting))
+
 local readerSlots = LFS.reader_slots().readerSlots
 local reverseReaderSlots = LFS.reader_slots().reverseReaderSlot
 function stringToDataItem(string)
@@ -18,22 +23,19 @@ end
 function sendCurrentBlock()
   local tcpSocket
   tcpSocket = net.createConnection(net.TCP, 0)
-  tcpSocket:connect(cfg.influxDB.port, cfg.influxDB.host)
+
   tcpSocket:on('connection', function(sck, c)
     local reverseReaderSlots = {}
-
     for rtag, v in pairs(readerSlots) do
       for fn, slot in pairs(v.fieldSlots) do
         reverseReaderSlots[slot] = {tag = rtag, measure = v.measurementName, field = fn}
       end
     end
-
     local tagsLine = ''
     for tag, value in pairs(cfg.influxTags) do
       tagsLine = tagsLine .. tag .. '=' .. value .. ','
     end
     tagsLine = string.sub(tagsLine, 1, (#tagsLine - 1))
-
     local ifl = ''
     for key, stringItem in pairs(currentDataBlock) do
       local dataItem = stringToDataItem(stringItem)
@@ -61,13 +63,18 @@ function sendCurrentBlock()
   end)
 
   tcpSocket:on('disconnection', function(sck, c)
+    print("disconnection code: "..c)
     appStatus.transmitting = false
     if (#currentDataBlock == 0 and (#dataQueue > 0 or appStatus.dataFileExists)) then
       node.task.post(node.task.MEDIUM_PRIORITY, LFS.transmission)
     end
+    if (#dataQueue == 0 and #currentDataBlock == 0 and not appStatus.dataFileExists) then
+      gpio.write(gpioPins.indicatorLed, gpio.HIGH)
+    end
   end)
 
   tcpSocket:on('reconnection', function(sck, c)
+    print("reconnection code: "..c)
     appStatus.transmitting = false
   end)
 
@@ -83,9 +90,10 @@ function sendCurrentBlock()
       currentDataBlock = {}
     end
   end)
+  tcpSocket:connect(cfg.influxDB.port, cfg.influxDB.host)
 end
-if #dataQueue == 0 then gpio.write(gpioPins.indicatorLed, gpio.HIGH) end
-if (appStatus.transmitting or appStatus.reading) then
+
+if (appStatus.transmitting) then
   return true
 end
 appStatus.transmitting = true
@@ -112,14 +120,8 @@ if (appStatus.dataFileExists and #currentDataBlock == 0) then
     file.close()
   end
 end
-if (#currentDataBlock == 0 and #dataQueue > 0) then
-  local itemsToCopy
-  if (#dataQueue > cfg.transmissionBlock) then
-    itemsToCopy = cfg.transmissionBlock
-  else
-    itemsToCopy = #dataQueue
-  end
 
+if (#currentDataBlock == 0 and #dataQueue > 0) then
   repeat
     dataItem = table.remove(dataQueue)
     if (dataItem) then

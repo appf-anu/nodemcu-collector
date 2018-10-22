@@ -5,6 +5,7 @@
 -- the image file is a valid and complete LFS image before loading.
 --
 
+print("---- HTTP_OTA ----")
 local host, path = ...
 
 local image = string.gsub(path, "(.*/)(.*)", "%2")

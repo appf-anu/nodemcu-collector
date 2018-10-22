@@ -1,17 +1,8 @@
-print('main ...')
+print('---- main ----')
 
 appStatus.dataFileExists = file.exists(cfg.dataFileName)
 
 if appStatus.dataFileExists == true then print("data file exists!") end
-
-local _, ext_reset_clause = node.bootreason()
-if ext_reset_clause == 0 then print("BOOTREASON: power-on") end
-if ext_reset_clause == 1 then print("BOOTREASON: hardware watchdog reset") end
-if ext_reset_clause == 2 then print("BOOTREASON: exception reset") end
-if ext_reset_clause == 3 then print("BOOTREASON: software watchdog reset") end
-if ext_reset_clause == 4 then print("BOOTREASON: software restart") end
-if ext_reset_clause == 5 then print("BOOTREASON: wake from deep sleep") end
-if ext_reset_clause == 6 then print("BOOTREASON: external reset") end
 
 
 function LFS_OTA()
@@ -62,8 +53,11 @@ timerAllocation.transmission:register(
   LFS.transmission
 )
 tmr.start(timerAllocation.transmission)
-
-LFS.wifi_client()
+if cfg.enduser == true then
+  LFS.wifi_client_enduser()
+else
+  LFS.wifi_client()
+end
 
 drawStatusToOled(3,3, "started")
 

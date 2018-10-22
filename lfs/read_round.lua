@@ -1,4 +1,4 @@
-print('read_round ...')
+print('---- read_round ----')
 local readerSlots = LFS.reader_slots().readerSlots
 local reverseReaderSlots = LFS.reader_slots().reverseReaderSlots
 function stringToDataItem(string)
@@ -44,7 +44,6 @@ function addToDataQueue(measurementId, value)
   end
 end
 
-appStatus.reading = true
 for key, readerSlot in pairs(readerSlots) do
   readerSlot.reader(function(...)
     for i, v in ipairs(arg) do
@@ -58,4 +57,3 @@ for key, readerSlot in pairs(readerSlots) do
     end
   end)
 end
-appStatus.reading = false

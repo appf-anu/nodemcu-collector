@@ -1,4 +1,4 @@
-print('ntp_sync ...')
+print("---- ntp_sync ----")
 local sntpServerIp
 
 function doNtpSync()

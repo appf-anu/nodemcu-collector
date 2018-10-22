@@ -1,4 +1,4 @@
-print('wifi_client_enduser ...')
+print('---- wifi_client_enduser ----')
 print('MAC: ', wifi.sta.getmac())
 
 wifi.setphymode(wifi.PHYMODE_G)
@@ -57,3 +57,4 @@ else
     end
   )
 end
+print('---- wifi_client_enduser ----')

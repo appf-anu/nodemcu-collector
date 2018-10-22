@@ -1,4 +1,4 @@
-print('ntp_sync ...')
+print('---- ota_update ----')
 local sntpServerIp
 
 function LFS_OTA()

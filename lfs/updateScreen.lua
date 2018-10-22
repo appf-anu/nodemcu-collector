@@ -1,4 +1,4 @@
-local currentDataBlock = {}
+local updateScreenBlock = {}
 
 
 function drawBox(i)
@@ -62,16 +62,16 @@ end
 
 function drawCurrentBlock()
   appStatus.disp:clearBuffer()
-  for key, dataItem in pairs(currentDataBlock) do
+  for key, dataItem in pairs(updateScreenBlock) do
     drawDataItem(dataItem)
   end
 end
 
-if (#currentDataBlock == 0 and #dataQueue > 0) then
+if (#updateScreenBlock == 0 and #dataQueue > 0) then
   for i,dataItem in reversedipairs(dataQueue) do
     dataItem = stringToDataItem(dataItem)
-    table.insert(currentDataBlock, dataItem)
-    if #currentDataBlock >= cfg.transmissionBlock then break end
+    table.insert(updateScreenBlock, dataItem)
+    if #updateScreenBlock >= cfg.transmissionBlock then break end
   end
 end
 

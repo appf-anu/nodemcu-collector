@@ -1,4 +1,14 @@
-print('init ...')
+print('---- init ----')
+
+local _, ext_reset_clause = node.bootreason()
+if ext_reset_clause == 0 then print("BOOTREASON: power-on") end
+if ext_reset_clause == 1 then print("BOOTREASON: hardware watchdog reset") end
+if ext_reset_clause == 2 then print("BOOTREASON: exception reset") end
+if ext_reset_clause == 3 then print("BOOTREASON: software watchdog reset") end
+if ext_reset_clause == 4 then print("BOOTREASON: software restart") end
+if ext_reset_clause == 5 then print("BOOTREASON: wake from deep sleep") end
+if ext_reset_clause == 6 then print("BOOTREASON: external reset") end
+
 -- Settings
 cfg = {}
 gpioPins ={}
@@ -40,24 +50,14 @@ if file.exists("lfs.img") then
 end
 gpio.write(gpioPins.indicatorLed, gpio.HIGH)
 
-function dump(o,z)
-   if z == nil then z = 0 end
-   if type(o) == 'table' then
-      local s = '\n'
-      local prefix = string.rep(' ',z)
-      for k,v in pairs(o) do
-         if type(v) == 'table' then z = z+1 s = s..'\n' end
-         s = s..prefix..k..': '..string.rep(' ', 20-#k) .. dump(v, z) .. '\n'
-      end
-      return s
-   else
-      return tostring(o)
-   end
-end
 
 node.setcpufreq(cfg.nodeCpuFreq)
 
-print(dump(cfg))
+local _initted = pcall(node.flashindex("_init"))
+print("_initted: "..tostring(_initted))
+
+
+print(LFS.dumptable(cfg))
 
 -- print("compiling main.lua")
 -- node.compile("main.lua")
@@ -93,7 +93,7 @@ function drawStatusToOled(x,y, string)
 end
 
 drawStatusToOled(3,3, "init...")
-require("trig")
+
 
 local ledState = false
 local angle = -72
@@ -110,7 +110,7 @@ timerAllocation.notification:register(
     if appStatus.disp ~= nil then
           angle = angle + 72
           appStatus.disp:setDrawColor(2)
-          local p = rotate_point({x=0, y=-32}, angle)
+          local p = LFS.trig():rotate_point({x=0, y=-32}, angle)
           appStatus.disp:drawLine(xoff, yoff, p.x+xoff, p.y+yoff)
           appStatus.disp:sendBuffer()
     else
@@ -127,12 +127,9 @@ timerAllocation.notification:register(
 timerAllocation.notification.start(timerAllocation.notification)
 
 
-local _initted = pcall(node.flashindex("_init"))
-print("_initted: "..tostring(_initted))
-
 timerAllocation.initAlarm = tmr.create()
 timerAllocation.initAlarm:alarm(10000, tmr.ALARM_SINGLE, function()
   tmr.stop(timerAllocation.notification)
   gpio.write(gpioPins.indicatorLed, gpio.HIGH)
-  require('main')
+  LFS.main()
 end)

@@ -2,7 +2,7 @@
 
 mkdir -p build
 cd build
-git clone https://github.com/nodemcu/nodemcu-firmware.git
+# git clone https://github.com/nodemcu/nodemcu-firmware.git
 
 cat > nodemcu-firmware/app/include/user_modules.h << EOF
 #ifndef __USER_MODULES_H__
@@ -42,6 +42,7 @@ cat > nodemcu-firmware/app/include/user_modules.h << EOF
 EOF
 
 sed -i -E "s/.*define LUA_FLASH_STORE.*/#define LUA_FLASH_STORE 0x40000/g" nodemcu-firmware/app/include/user_config.h
+sed -i  "s/LFS: disabled/LFS: enabled/" nodemcu-firmware/app/include/user_version.h
 docker pull marcelstoer/nodemcu-build:latest
 docker run --rm -it -e TZ=Australia/Canberra -e IMAGE_NAME=$(date "+%Y-%m-%dT%H:%M:%S") -v `pwd`/nodemcu-firmware:/opt/nodemcu-firmware:rw marcelstoer/nodemcu-build:latest build
 

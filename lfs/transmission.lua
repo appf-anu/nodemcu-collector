@@ -3,6 +3,7 @@ print('---- transmission ----')
 print('#dataQueue: '..#dataQueue)
 print('#currentDataBlock: '..#currentDataBlock)
 print('transmitting: '..tostring(appStatus.transmitting))
+local tcpSocket
 
 local readerSlots = LFS.reader_slots().readerSlots
 local reverseReaderSlots = LFS.reader_slots().reverseReaderSlot
@@ -21,7 +22,7 @@ function dataItemToString(dataItem)
 end
 
 function sendCurrentBlock()
-  local tcpSocket
+
   tcpSocket = net.createConnection(net.TCP, 0)
 
   tcpSocket:on('connection', function(sck, c)
@@ -37,6 +38,7 @@ function sendCurrentBlock()
     end
     tagsLine = string.sub(tagsLine, 1, (#tagsLine - 1))
     local ifl = ''
+    local ifls = {}
     for key, stringItem in pairs(currentDataBlock) do
       local dataItem = stringToDataItem(stringItem)
       if (dataItem[2] and dataItem[3]) then
@@ -89,8 +91,10 @@ function sendCurrentBlock()
     if (findStart) then
       currentDataBlock = {}
     end
+    appStatus.transmitting = false
   end)
   tcpSocket:connect(cfg.influxDB.port, cfg.influxDB.host)
+
 end
 
 if (appStatus.transmitting) then

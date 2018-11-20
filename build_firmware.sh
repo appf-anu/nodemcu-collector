@@ -2,7 +2,12 @@
 
 mkdir -p build
 cd build
-# git clone https://github.com/nodemcu/nodemcu-firmware.git
+rm -rf nodemcu-firmware
+git clone https://github.com/nodemcu/nodemcu-firmware.git
+cd  nodemcu-firmware
+git checkout 0abb26170b56178fb5d71451e6688abf2fd3c7e5
+cd ..
+
 
 cat > nodemcu-firmware/app/include/user_modules.h << EOF
 #ifndef __USER_MODULES_H__
@@ -10,12 +15,13 @@ cat > nodemcu-firmware/app/include/user_modules.h << EOF
 
 #ifndef LUA_CROSS_COMPILER
 //#define LUA_USE_MODULES_ENDUSER_SETUP // USE_DNS in dhcpserver.h needs to be enabled for this module to work.
+#define LUA_USE_MODULES_UART
 
 // sensor modules
 #define LUA_USE_MODULES_BME280
 #define LUA_USE_MODULES_BME680
 #define LUA_USE_MODULES_DHT
-// bme modules depend on i2c
+// bme modules depend on i2c 
 #define LUA_USE_MODULES_I2C
 // so that we can use SHA1 to verify lfs.img
 #define LUA_USE_MODULES_CRYPTO

@@ -3,16 +3,19 @@ local readerSlots = {
   sys = {
     measurementName = 'sys',
     reader = function(cb)
-      local rssi, heap
+      local rssi, heap, versionHash
       heap = node.heap()
       rssi = wifi.sta.getrssi()
       if rssi == nil or heap == nil then
         return
       end
-     cb(heap, rssi)
+      if file.exists("lfs.img") then
+        versionHash = crypto.toHex(crypto.fhash("sha1", "lfs.img"))
+      end
+     cb(heap, rssi, version)
     end,
-    fieldSlots = {heap_size_b = 1, rssi_db = 2},
-    readOrder = {[1] = 1, [2] = 2},
+    fieldSlots = {heap_size_b = 1, rssi_db = 2, version_hash = 18},
+    readOrder = {[1] = 1, [2] = 2, [3] = 18},
   },
   dht22 = {
     measurementName = 'sensors',

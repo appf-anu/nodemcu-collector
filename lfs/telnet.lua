@@ -146,8 +146,8 @@ return {
     tmr.alarm(0, 500, tmr.ALARM_AUTO, function()
       if (wifi.sta.status() == wifi.STA_GOTIP) then
         tmr.unregister(0)
-        print("Welcome to NodeMCU world", node.heap(), wifi.sta.getip())
         net.createServer(net.TCP, 180):listen(port or 23, telnet_listener)
+        print("telnet started", node.heap(), wifi.sta.getip())
       else
         uwrite(0,".")
       end

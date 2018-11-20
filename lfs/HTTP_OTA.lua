@@ -8,7 +8,8 @@
 print("---- HTTP_OTA ----")
 local host, path = ...
 
-local image = string.gsub(path, "(.*/)(.*)", "%2")
+-- local image = string.gsub(path, "(.*/)(.*)", "%2")
+local image = "lfs.img"
 
 local doRequest, firstRec, subsRec, finalise
 local n, total, size = 0, 0
@@ -17,6 +18,7 @@ doRequest = function(sk,hostIP)
   if hostIP then
     local con = net.createConnection(net.TCP,0)
     con:connect(80,hostIP)
+
     -- Note that the current dev version can only accept uncompressed LFS images
     con:on("connection",function(sck)
       local request = table.concat( {
@@ -57,7 +59,7 @@ subsRec = function(sck,rec)
     sck:hold()
     node.task.post(0, function() sck:unhold() end)
   end
-  uart.write(0,('%u of %u, '):format(total, size))
+  print(('%u of %u'):format(total, size))
   file.write(rec)
   if total == size then finalise(sck) end
 end
@@ -71,7 +73,32 @@ finalise = function(sck)
     wifi.setmode(wifi.NULLMODE)
     collectgarbage();collectgarbage()
       -- run as separate task to maximise RAM available
-    node.task.post(function() node.flashreload(image) end)
+
+    node.task.post(function()
+      local newhash = crypto.toHex(crypto.fhash("sha1", image))
+
+      if file.exists("fs.img") then
+        local oldhash = crypto.toHex(crypto.fhash("sha1", "fs.img"))
+        print("oldhash: "..oldhash.."\tnewhash: "..newhash)
+        if oldhash == newhash then
+          print("Restarting old")
+          node.restart()
+          return
+        else
+          print("backing up old lfs img")
+          if file.exists("backup.img") then file.remove("backup.img") end
+          file.rename("fs.img", "backup.img") 
+        end
+      end
+      print("moving new lfs img to staging area")
+      file.rename(image, "fs.img")
+      print("flashing new lfs. will reboot with hardware watchdog reset")
+      local valid = node.flashreload("fs.img")
+      print("invalid img recovering")
+      file.remove(image)
+      file.rename("backup.img", image)
+      node.restart()
+    end)
   else
     print"Invalid save of image file"
   end

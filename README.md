@@ -35,7 +35,51 @@ We have been having success (and have been officially supporting) using bme280s,
 * Inspect output of serial console of module, you should see a succesful wifi connection info.
 * Check data captured on InfluxDB. You will get these measurements: `heap_size_b` and `rssi_db`
 
+
+## example config.lua:
+
+
+```
+cfg = {
+  wifiSsid = "My-Wifi",
+  wifiPass = "my-password",
+  otaHost = "my-ota-host.com",
+  otaPath = "/files/nodemcu-collector/lfs.img",
+  otaRefresh = 24, --hours
+  dns1 = '8.8.4.4',
+  telnetPort = 23,
+  production = true,
+  transmissionBlock = 10, -- Measurements to send
+  transmissionInterval = 23000, -- miliseconds
+  readRoundInterval = 60000, -- miliseconds
+  toFileWhenHeap = 15000, -- lower than in bytes
+  dataFileName = 'data.csv',
+  altitude = 577, --altitude for calibrated reading of relative pressure at SL
+  parCalibration = 0.0263157894, --calibration value for par on a bh1750
+  -- parCalibrationDivisor = 38.0,
+  influxDB = {
+      host = 'my-influxdb-host.com',
+      port = '8086',
+      dbname = 'mydb',
+      username = 'user',
+      password = 'my-influxdb-password'
+  },
+  influxTags = {
+    node = 'node51',
+    location = 'someplace',
+    area = 'somewhere',
+    chipid = tostring(node.chipid())
+  },
+  sntpServerName = '0.au.pool.ntp.org',
+  sntpServerIp = '203.7.149.150',
+  sntpRefresh = 24, -- hours
+  nodeCpuFreq = node.CPU80MHZ, -- node.CPU160MHZ
+}
+
+```
+
 ## Contributing
 
 The LFS image is compiled using [Terry Ellison's web service](https://blog.ellisons.org.uk/article/nodemcu/a-lua-cross-compile-web-service/). If you make changes to any of the lua code in lfs/ then you will need to zip that directory and upload it to the web service, or you can use my `compilelfs.py` script.
 
+There is now a `build_firmware.sh` and `build_lfs.sh` scripts, `build_firmware.sh` must be run prior to `build_lfs.sh`, however you can just use `compilelfs.py`

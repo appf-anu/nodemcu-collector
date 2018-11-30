@@ -174,17 +174,17 @@ local readerSlots = {
         return bit.bor(b1, b2)
       end
       -- clear the sensor
-      read_reg(0x20, 0, 2)
+      readRegister(0x20, 0, 2)
       repeat
           tmr.delay(10)
           print("waiting on chirp...")
-      until tonumber(read_reg(0x20, 9,1)) == nil
+      until tonumber(readRegister(0x20, 9,1)) == nil
 
       -- soil capacitance
-      local val = readReg(0x20, 0, 2)
+      local val = readRegister(0x20, 0, 2)
       local soil_capacitance = decodeChirp(val)
       -- soil temperature
-      val = readReg(0x20, 5, 2)
+      val = readRegister(0x20, 5, 2)
       local soil_temperature = decodeChirp(val)/10
 
       -- light

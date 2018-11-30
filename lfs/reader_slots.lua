@@ -198,10 +198,13 @@ local readerSlots = {
       -- end)
       -- reset sensor
       writeRegister(0x20, 6)
-      cb(soil_capacitance, soil_temperature, 0)
+      cb(soil_capacitance, soil_temperature)
     end,
-    fieldSlots = {soil_capacitance = 19, soil_temperature = 20, light_level = 21},
-    readOrder = {[1] = 19, [2] = 20, [3] = 21}
+    -- fieldSlots = {soil_capacitance = 19, soil_temperature = 20, light_level = 21},
+    -- readOrder = {[1] = 19, [2] = 20, [3] = 21}
+    fieldSlots = {soil_capacitance = 19, soil_temperature = 20},
+    
+    readOrder = {[1] = 19, [2] = 20}
   }
 }
 

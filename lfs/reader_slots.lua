@@ -158,12 +158,16 @@ local readerSlots = {
   },
   chirpsensor276 = {
     measurementName = 'sensors',
-    reader = function(cb) 
+    reader = function(cb)
+      -- uncomment the code at the end of this function to enable light sensor.
+      -- the sensors I was using are the ruggedized so their light sensor is always covered.
+      -- the reason this is disabled is because it takes 2s to read from the light sensor.
       i2c.start(0)
       found = i2c.address(0, 0x20, i2c.TRANSMITTER)
       if not found then
         return
       end
+
       function decodeChirp(val)
         local b1 = bit.lshift(string.byte(val, 1), 8)
         local b2 = string.byte(val, 2)
@@ -182,12 +186,22 @@ local readerSlots = {
       -- soil temperature
       val = readReg(0x20, 5, 2)
       local soil_temperature = decodeChirp(val)/10
+
+      -- light
+      -- writeRegister(0x20, 3)
+      -- tmr.create():alarm(200000, tmr.ALARM_SINGLE, function()
+      --   val = readReg(0x20, 4, 2)
+      --   local light_ = 65535 - decodeChirp(val)
+      --   cb(soil_capacitance, soil_temperature, light)
+      --   -- reset sensor
+      --   writeRegister(0x20, 6)
+      -- end)
       -- reset sensor
       writeRegister(0x20, 6)
-      cb(soil_capacitance, soil_temperature)
+      cb(soil_capacitance, soil_temperature, 0)
     end,
-    fieldSlots = {soil_capacitance = 19, soil_temperature = 20},
-    readOrder = {[1] = 19, [2] = 20}
+    fieldSlots = {soil_capacitance = 19, soil_temperature = 20, light_level = 21},
+    readOrder = {[1] = 19, [2] = 20, [3] = 21}
   }
 }
 

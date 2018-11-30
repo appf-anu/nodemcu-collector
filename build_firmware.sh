@@ -23,6 +23,8 @@ cat > nodemcu-firmware/app/include/user_modules.h << EOF
 #define LUA_USE_MODULES_DHT
 // bme modules depend on i2c 
 #define LUA_USE_MODULES_I2C
+// bit module for other things
+#define LUA_USE_MODULES_BIT
 // so that we can use SHA1 to verify lfs.img
 #define LUA_USE_MODULES_CRYPTO
 // we need rtctime and SNTP to get the current time.
@@ -42,6 +44,7 @@ cat > nodemcu-firmware/app/include/user_modules.h << EOF
 #define LUA_USE_MODULES_TMR
 // wifi to communicate
 #define LUA_USE_MODULES_WIFI
+
 
 #endif  /* LUA_CROSS_COMPILER */
 #endif  /* __USER_MODULES_H__ */

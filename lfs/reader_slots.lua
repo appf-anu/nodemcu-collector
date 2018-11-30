@@ -1,4 +1,25 @@
 
+function writeRegister(dev_addr, value)
+    id = 0
+    i2c.start(id)
+    i2c.address(id, dev_addr, i2c.TRANSMITTER)
+    i2c.write(id, value)
+    i2c.stop(id)
+end
+
+function readRegister(dev_addr, reg_addr, num_bytes)
+    id = 0
+    i2c.start(id)
+    i2c.address(id, dev_addr, i2c.TRANSMITTER)
+    i2c.write(id, reg_addr)
+    i2c.stop(id)
+    i2c.start(id)
+    i2c.address(id, dev_addr, i2c.RECEIVER)
+    c = i2c.read(id, num_bytes)
+    i2c.stop(id)
+    return c
+end
+
 local readerSlots = {
   sys = {
     measurementName = 'sys',
@@ -114,7 +135,7 @@ local readerSlots = {
         i2c.start(0)
         found = i2c.address(0, 0x23, i2c.TRANSMITTER)
         if not found then
-            return nil, nil
+            return
         end
         i2c.write(0, 0x10)
         i2c.stop(0)
@@ -134,6 +155,39 @@ local readerSlots = {
     end,
     fieldSlots = {lux = 16, par = 17},
     readOrder = {[1] = 16, [2] = 17},
+  },
+  chirpsensor276 = {
+    measurementName = 'sensors',
+    reader = function(cb) 
+      i2c.start(0)
+      found = i2c.address(0, 0x20, i2c.TRANSMITTER)
+      if not found then
+        return
+      end
+      function decodeChirp(val)
+        local b1 = bit.lshift(string.byte(val, 1), 8)
+        local b2 = string.byte(val, 2)
+        return bit.bor(b1, b2)
+      end
+      -- clear the sensor
+      read_reg(0x20, 0, 2)
+      repeat
+          tmr.delay(10)
+          print("waiting on chirp...")
+      until tonumber(read_reg(0x20, 9,1)) == nil
+
+      -- soil capacitance
+      local val = readReg(0x20, 0, 2)
+      local soil_capacitance = decodeChirp(val)
+      -- soil temperature
+      val = readReg(0x20, 5, 2)
+      local soil_temperature = decodeChirp(val)/10
+      -- reset sensor
+      writeRegister(0x20, 6)
+      cb(soil_capacitance, soil_temperature)
+    end,
+    fieldSlots = {soil_capacitance = 19, soil_temperature = 20},
+    readOrder = {[1] = 19, [2] = 20}
   }
 }
 

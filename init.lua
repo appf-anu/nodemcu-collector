@@ -96,7 +96,6 @@ end
 drawStatusToOled(3,3, "init...")
 
 
-
 local angle = -72
 local xoff = 32.0
 local yoff = 100.0

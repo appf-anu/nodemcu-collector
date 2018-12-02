@@ -23,6 +23,6 @@ appStatus = {
   reading = false,
   ntpHour = 0,
   disp = nil,
-  drawing = false
+  drawing = false,
   ledState = false
 }

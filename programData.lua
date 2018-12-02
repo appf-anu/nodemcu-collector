@@ -24,4 +24,5 @@ appStatus = {
   ntpHour = 0,
   disp = nil,
   drawing = false
+  ledState = false
 }

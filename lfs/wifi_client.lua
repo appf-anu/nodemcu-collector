@@ -17,12 +17,27 @@ wifi.eventmon.register(wifi.eventmon.STA_GOT_IP, function()
     appStatus.wifiConnected = true
     LFS.ntp_sync()
     LFS.telnet():open()
+    tmr.stop(timerAllocation.notification)
 end)
 
 wifi.eventmon.register(wifi.STA_CONNECTING, function(previousState)
     if(previousState == wifi.STA_GOTIP) then
         print("Station lost connection with access point\n\tAttempting to reconnect...")
         appStatus.wifiConnected = false
+        timerAllocation.notification:register(
+          time,
+          tmr.ALARM_AUTO,
+          function()
+            if appStatus.ledState == true then
+              appStatus.ledState = false
+              gpio.write(gpioPins.indicatorLed, gpio.HIGH)
+            else
+              appStatus.ledState = true
+              gpio.write(gpioPins.indicatorLed, gpio.LOW)
+            end
+          end
+        )
+        timerAllocation.notification.start(timerAllocation.notification)
     else
         print("STATION_CONNECTING")
     end

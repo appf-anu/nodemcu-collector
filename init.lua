@@ -1,5 +1,6 @@
 print('---- init ----')
 
+
 local _, ext_reset_clause = node.bootreason()
 if ext_reset_clause == 0 then print("BOOTREASON: power-on") end
 if ext_reset_clause == 1 then print("BOOTREASON: hardware watchdog reset") end
@@ -95,7 +96,7 @@ end
 drawStatusToOled(3,3, "init...")
 
 
-local ledState = false
+
 local angle = -72
 local xoff = 32.0
 local yoff = 100.0
@@ -114,11 +115,11 @@ timerAllocation.notification:register(
           appStatus.disp:drawLine(xoff, yoff, p.x+xoff, p.y+yoff)
           appStatus.disp:sendBuffer()
     else
-      if ledState == true then
-        ledState = false
+      if appStatus.ledState == true then
+        appStatus.ledState = false
         gpio.write(gpioPins.indicatorLed, gpio.HIGH)
       else
-        ledState = true
+        appStatus.ledState = true
         gpio.write(gpioPins.indicatorLed, gpio.LOW)
       end
     end
@@ -129,7 +130,6 @@ timerAllocation.notification.start(timerAllocation.notification)
 
 timerAllocation.initAlarm = tmr.create()
 timerAllocation.initAlarm:alarm(10000, tmr.ALARM_SINGLE, function()
-  tmr.stop(timerAllocation.notification)
   gpio.write(gpioPins.indicatorLed, gpio.HIGH)
   LFS.main()
 end)
